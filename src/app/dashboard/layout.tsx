@@ -244,7 +244,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
           <div className="flex-1" />
 
-          <Link href="/dashboard" target="_blank" className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium text-zinc-600 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800">
+          <Link href="https://www.meetingautomator.com" target="_blank" className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium text-zinc-600 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800">
             <Globe className="w-4 h-4" /> Back to Website
           </Link>
 
