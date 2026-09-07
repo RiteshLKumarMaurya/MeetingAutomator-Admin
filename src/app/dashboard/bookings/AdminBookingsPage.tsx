@@ -218,11 +218,7 @@ function BookingHero({
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_15%_15%,rgba(99,102,241,.30),transparent_35%),radial-gradient(circle_at_90%_20%,rgba(14,165,233,.24),transparent_32%),radial-gradient(circle_at_75%_100%,rgba(139,92,246,.22),transparent_35%)]" />
       <div className="absolute right-6 top-6 hidden sm:block">
         <div className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.06] px-3.5 py-2.5 shadow-lg backdrop-blur-xl">
-          <img
-            src="/png.png"
-            alt="Meeting Automator"
-            className="h-7 w-auto max-w-[150px] object-contain"
-          />
+         
           <span className="h-2 w-2 rounded-full bg-emerald-300 shadow-[0_0_14px_rgba(110,231,183,.85)]" />
         </div>
       </div>
