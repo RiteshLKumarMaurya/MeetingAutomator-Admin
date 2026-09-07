@@ -1,0 +1,912 @@
+/* ============================================================
+   Premium Fonts
+   ============================================================ */
+/* @import url('https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&family=Syne:wght@400;500;600;700;800&display=swap'); */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ============================================================
+   DESIGN TOKENS — single source of truth
+   Every component must read these variables. Never hardcode a
+   color, shadow, or border inside a reusable component again.
+
+   Naming: --color-{role}        → text/bg/border colors
+           --shadow-{role}       → box-shadow recipes
+           --gradient-{role}     → multi-stop gradients
+
+   Light theme: Apple/Stripe-style — white surfaces, soft shadow,
+   premium contrast, no murkiness.
+   Dark theme:  Luxury Midnight — emerald brand, gold accents,
+   unchanged from the existing premium look.
+   ============================================================ */
+:root {
+  /* ---- Surfaces ---- */
+  --color-background: #ffffff;
+  --color-surface: #f8fafc;
+  --color-card: rgba(255, 255, 255, 0.90);
+  --color-card-hover: #f4f4f5;
+  --color-glass: rgba(255, 255, 255, 0.80);
+
+  /* ---- Borders ---- */
+  --color-border: rgba(0, 0, 0, 0.08);
+  --color-border-strong: rgba(0, 0, 0, 0.14);
+  --color-border-glow: rgba(15, 118, 110, 0.20);
+  --color-glass-border: rgba(0, 0, 0, 0.06);
+
+  /* ---- Text ---- */
+  --color-text-primary: #09090b;
+  --color-text-secondary: #52525b;
+  --color-muted: #71717a;
+
+  /* ---- Brand ---- */
+  --color-primary: #0F766E;
+  --color-primary-hover: #14B8A6;
+  --color-accent: #D4AF37;
+  --color-accent-soft: #F0D78C;
+
+  /* ---- Inverse surface (dark band on light page) ---- */
+  --color-inverse-bg: #111113;
+  --color-inverse-surface: #1c1c1f;
+  --color-inverse-border: rgba(255, 255, 255, 0.07);
+  --color-inverse-text-primary: #fafafa;
+  --color-inverse-text-secondary: rgba(255, 255, 255, 0.55);
+  --color-inverse-text-muted: rgba(255, 255, 255, 0.38);
+
+  /* ---- Gradients ---- */
+  --gradient-primary: linear-gradient(135deg, #0F766E, #14B8A6);
+  --gradient-accent: linear-gradient(135deg, #D4AF37, #B8860B);
+
+  /* ---- Shadows ---- */
+  --shadow-card: 0 10px 30px rgba(0, 0, 0, 0.08);
+  --shadow-card-hover: 0 20px 40px rgba(0, 0, 0, 0.12);
+  --shadow-button: 0 4px 16px rgba(15, 118, 110, 0.32);
+  --shadow-button-hover: 0 10px 28px rgba(15, 118, 110, 0.42);
+
+  /* ---- Selection / misc ---- */
+  --color-selection-bg: rgba(15, 118, 110, 0.32);
+  --color-selection-text: #CCFBF1;
+  --color-scrollbar-thumb: #d4d4d8;
+  --color-scrollbar-thumb-hover: #a1a1aa;
+  --color-scrollbar-track: var(--color-surface);
+  --color-grid-dot: rgba(0, 0, 0, 0.025);
+
+  /* ---- Operations card (HeroSection) ---- */
+  --header-border: rgba(0, 0, 0, 0.08);
+  --title-color: var(--color-text-primary);
+  --live-color: #15803D;
+  --row-divide: rgba(0, 0, 0, 0.06);
+  --label-color: var(--color-text-primary);
+  --detail-color: var(--color-text-secondary);
+  --badge-new-bg: rgba(34, 197, 94, 0.14);
+  --badge-new-fg: #15803D;
+  --time-color: var(--color-muted);
+  --footer-bg: rgba(0, 0, 0, 0.025);
+
+  /* ---- Legacy aliases (back-compat — do not add new usages) ---- */
+  --bg-primary: var(--color-background);
+  --bg-secondary: var(--color-surface);
+  --text-primary: var(--color-text-primary);
+  --text-secondary: var(--color-text-secondary);
+  --text-muted: var(--color-muted);
+  --border: var(--color-border);
+  --border-glow: var(--color-border-glow);
+  --card-bg: var(--color-card);
+  --hover-bg: var(--color-card-hover);
+  --card-shadow: var(--shadow-card);
+  --card-shadow-hover: var(--shadow-card-hover);
+  --glass-bg: var(--color-glass);
+  --glass-border: 1px solid var(--color-glass-border);
+  --gradient-secondary: var(--gradient-accent);
+  --accent-emerald: var(--color-primary);
+  --accent-emerald-hover: var(--color-primary-hover);
+  --accent-gold: var(--color-accent);
+  --gold-soft: var(--color-accent-soft);
+}
+
+.dark {
+  /* ---- Surfaces ---- */
+  --color-background: #050506;
+  --color-surface: #121214;
+  --color-card: rgba(14, 14, 16, 0.85);
+  --color-card-hover: #17171B;
+  --color-glass: rgba(5, 5, 6, 0.6);
+
+  /* ---- Borders ---- */
+  --color-border: rgba(250, 250, 250, 0.06);
+  --color-border-strong: rgba(250, 250, 250, 0.10);
+  --color-border-glow: rgba(20, 184, 166, 0.3);
+  --color-glass-border: rgba(250, 250, 250, 0.05);
+
+  /* ---- Text ---- */
+  --color-text-primary: #FAFAFA;
+  --color-text-secondary: #C9C9CE;
+  --color-muted: #6B6B74;
+
+  /* ---- Brand ---- */
+  --color-primary: #0F766E;
+  --color-primary-hover: #2DD4BF;
+  --color-accent: #D4AF37;
+  --color-accent-soft: #F0D78C;
+
+  /* ---- Inverse surface (dark band is same as page in dark mode) ---- */
+  --color-inverse-bg: #0d0d0f;
+  --color-inverse-surface: #161618;
+  --color-inverse-border: rgba(255, 255, 255, 0.07);
+  --color-inverse-text-primary: #fafafa;
+  --color-inverse-text-secondary: rgba(255, 255, 255, 0.55);
+  --color-inverse-text-muted: rgba(255, 255, 255, 0.38);
+
+  /* ---- Gradients ---- */
+  --gradient-primary: linear-gradient(135deg, #0F766E 0%, #14B8A6 100%);
+  --gradient-accent: linear-gradient(135deg, #D4AF37 0%, #B8860B 100%);
+
+  /* ---- Shadows ---- */
+  --shadow-card: 0 8px 32px rgba(0, 0, 0, 0.6), 0 2px 8px rgba(0, 0, 0, 0.35);
+  --shadow-card-hover: 0 28px 60px rgba(0, 0, 0, 0.7), 0 0 40px rgba(15, 118, 110, 0.16);
+  --shadow-button: 0 4px 16px rgba(15, 118, 110, 0.32);
+  --shadow-button-hover: 0 10px 28px rgba(15, 118, 110, 0.42);
+
+  /* ---- Selection / misc ---- */
+  --color-selection-bg: rgba(20, 184, 166, 0.35);
+  --color-selection-text: #99F6E4;
+  --color-scrollbar-thumb: #27272a;
+  --color-scrollbar-thumb-hover: #3f3f46;
+  --color-grid-dot: rgba(255, 255, 255, 0.04);
+
+  /* ---- Operations card (HeroSection) ---- */
+  --header-border: rgba(255, 255, 255, 0.07);
+  --title-color: rgba(255, 255, 255, 0.92);
+  --live-color: #86EFAC;
+  --row-divide: rgba(255, 255, 255, 0.05);
+  --label-color: rgba(255, 255, 255, 0.95);
+  --detail-color: rgba(255, 255, 255, 0.55);
+  --badge-new-bg: rgba(34, 197, 94, 0.16);
+  --badge-new-fg: #86EFAC;
+  --time-color: rgba(255, 255, 255, 0.45);
+  --footer-bg: rgba(255, 255, 255, 0.03);
+}
+
+/* ============================================================
+   Base — Premium Feel
+   ============================================================ */
+@layer base {
+  * {
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+  }
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  body {
+    background-color: var(--color-background);
+    color: var(--color-text-primary);
+    font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    background-image:
+      radial-gradient(circle at 12% 18%, rgba(15, 118, 110, 0.07) 0%, transparent 45%),
+      radial-gradient(circle at 88% 78%, rgba(212, 175, 55, 0.035) 0%, transparent 42%);
+  }
+  .dark body {
+    background-image:
+      radial-gradient(circle at 82% 25%, rgba(20, 184, 166, 0.06) 0%, transparent 50%),
+      radial-gradient(circle at 10% 85%, rgba(212, 175, 55, 0.03) 0%, transparent 45%);
+  }
+  h1, h2, h3, h4, h5, h6 {
+    font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-weight: 700;
+    letter-spacing: -0.022em;
+    line-height: 1.2;
+    color: var(--color-text-primary);
+  }
+  p {
+    color: var(--color-text-secondary);
+    line-height: 1.65;
+  }
+  a {
+    color: var(--color-primary);
+    transition: color 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    text-decoration: none;
+    font-weight: 500;
+  }
+  a:hover {
+    color: var(--color-primary-hover);
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+  ::selection {
+    background: var(--color-selection-bg);
+    color: var(--color-selection-text);
+  }
+
+  /* Premium Scrollbar */
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: var(--color-surface);
+    border-radius: 10px;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--color-scrollbar-thumb);
+    border-radius: 10px;
+    border: 2px solid var(--color-surface);
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--color-scrollbar-thumb-hover);
+  }
+}
+
+/* ============================================================
+   Semantic surface/text utility classes
+   ============================================================ */
+@layer utilities {
+  .bg-surface { background-color: var(--color-background); }
+  .bg-card { background-color: var(--color-card); }
+  .bg-raised { background-color: var(--color-surface); }
+  .text-primary { color: var(--color-text-primary); }
+  .text-secondary { color: var(--color-text-secondary); }
+  .text-muted { color: var(--color-muted); }
+  .border-default { border-color: var(--color-border); }
+  .border-strong { border-color: var(--color-border-strong); }
+
+  /* ── Inverse surface — dark band that must look premium in BOTH themes.
+     In light mode this renders a deep charcoal panel.
+     In dark mode it matches the near-black page. ── */
+  .bg-inverse         { background-color: var(--color-inverse-bg); }
+  .bg-inverse-surface { background-color: var(--color-inverse-surface); }
+  .border-inverse     { border-color: var(--color-inverse-border); }
+  .text-inverse-primary   { color: var(--color-inverse-text-primary); }
+  .text-inverse-secondary { color: var(--color-inverse-text-secondary); }
+  .text-inverse-muted     { color: var(--color-inverse-text-muted); }
+}
+
+/* ============================================================
+   Premium Component Upgrades
+   ============================================================ */
+@layer components {
+  /* Glassmorphic Cards */
+  .card-base {
+    background-color: var(--color-card);
+    backdrop-filter: blur(2px);
+    border: 1px solid var(--color-border);
+    border-radius: 1.5rem;
+    transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: var(--shadow-card);
+  }
+  .card-base:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-card-hover);
+    border-color: var(--color-border-glow);
+    background-color: var(--color-card-hover);
+  }
+
+  /* Glass card (frosted) */
+  .card-glass {
+    background: var(--color-glass);
+    backdrop-filter: blur(20px) saturate(150%);
+    border: 1px solid var(--color-glass-border);
+    border-radius: 1.75rem;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(212, 175, 55, 0.05);
+    transition: all 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .card-glass:hover {
+    transform: translateY(-2px);
+    background: var(--color-card-hover);
+    border-color: var(--color-border-glow);
+  }
+
+  /* Card with hover-lift, padded */
+  .card-hover {
+    background-color: var(--color-card);
+    border: 1px solid var(--color-border);
+    border-radius: 1.25rem;
+    padding: 1.5rem;
+    box-shadow: var(--shadow-card);
+    transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .card-hover:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-card-hover);
+    border-color: var(--color-border-glow);
+  }
+
+  /* ── Skeleton pulse fill — theme-aware ── */
+  .skeleton-fill {
+    background-color: var(--color-surface);
+  }
+  .dark .skeleton-fill {
+    background-color: #27272a;
+  }
+
+  /* ── Inverse card — used inside dark/inverse-bg sections ──
+     Appears as a lighter panel on dark backgrounds in both themes. */
+  .card-inverse {
+    background-color: var(--color-inverse-surface);
+    border: 1px solid var(--color-inverse-border);
+    border-radius: 1rem;
+    transition: border-color 0.25s ease;
+  }
+  .card-inverse:hover {
+    border-color: rgba(255, 255, 255, 0.14);
+  }
+
+  /* Premium Buttons — single definition each, no duplicates */
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.65rem;
+    padding: 0.85rem 2rem;
+    border-radius: 2rem;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    background: var(--gradient-primary);
+    color: #FAFAFA;
+    box-shadow: var(--shadow-button);
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+  }
+  .btn-primary::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.12), transparent);
+    transition: left 0.6s ease;
+    z-index: -1;
+  }
+  .btn-primary:hover::before {
+    left: 100%;
+  }
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-button-hover);
+  }
+  .btn-primary:active {
+    transform: translateY(1px);
+  }
+
+  .btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.8rem 1.8rem;
+    border-radius: 2rem;
+    font-weight: 600;
+    font-size: 0.875rem;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    background-color: transparent;
+    border: 1.5px solid var(--color-border);
+    color: var(--color-text-secondary);
+    backdrop-filter: blur(4px);
+  }
+  .btn-secondary:hover {
+    background-color: rgba(15, 118, 110, 0.1);
+    border-color: var(--color-primary-hover);
+    color: var(--color-primary-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(15, 118, 110, 0.14);
+  }
+
+  /* ── CTA buttons inside inverse/dark sections ── */
+  .btn-inverse-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.85rem 1.75rem;
+    border-radius: 2rem;
+    font-weight: 600;
+    font-size: 0.875rem;
+    background-color: #ffffff;
+    color: #09090b;
+    transition: background-color 0.2s ease, opacity 0.2s ease;
+  }
+  .btn-inverse-primary:hover {
+    background-color: #f4f4f5;
+  }
+
+  .btn-inverse-outline {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.85rem 1.75rem;
+    border-radius: 2rem;
+    font-weight: 500;
+    font-size: 0.875rem;
+    background-color: transparent;
+    border: 1.5px solid rgba(255, 255, 255, 0.18);
+    color: rgba(255, 255, 255, 0.80);
+    transition: border-color 0.2s ease, color 0.2s ease;
+  }
+  .btn-inverse-outline:hover {
+    border-color: rgba(255, 255, 255, 0.40);
+    color: #ffffff;
+  }
+
+  /* Inputs - Premium */
+  /*
+   * The consultation form uses the `.input` utility. Keep it semantic and
+   * theme-aware so native inputs/selects never fall back to browser styling.
+   */
+  .input {
+    width: 100%;
+    min-height: 3rem;
+    padding: 0.75rem 0.9rem;
+    border-radius: 0.9rem;
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border-strong);
+    color: var(--color-text-primary);
+    font-size: 0.9rem;
+    line-height: 1.4;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+    color-scheme: light;
+  }
+  .dark .input {
+    color-scheme: dark;
+  }
+  .input:hover {
+    border-color: var(--color-border-glow);
+  }
+  .input:focus {
+    outline: none;
+    border-color: var(--color-primary-hover);
+    box-shadow: 0 0 0 3px rgba(20, 184, 166, 0.14);
+    background-color: var(--color-card);
+  }
+  .input::placeholder {
+    color: var(--color-muted);
+    opacity: 0.9;
+  }
+  .input:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+  .input option {
+    background: var(--color-background);
+    color: var(--color-text-primary);
+  }
+
+  .input-base {
+    width: 100%;
+    padding: 0.9rem 1.2rem;
+    border-radius: 1.25rem;
+    font-size: 0.9rem;
+    background-color: var(--color-card);
+    border: 1px solid var(--color-border);
+    color: var(--color-text-primary);
+    transition: border-color 0.25s ease, box-shadow 0.25s ease;
+    backdrop-filter: blur(4px);
+  }
+  .input-base:focus {
+    outline: none;
+    border-color: var(--color-primary-hover);
+    box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.18);
+  }
+  .input-base::placeholder {
+    color: var(--color-muted);
+    font-weight: 400;
+  }
+
+  /* Badges */
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.3rem 0.9rem;
+    border-radius: 40px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    backdrop-filter: blur(2px);
+    transition: all 0.25s ease;
+  }
+  .badge-green {
+    background: rgba(16, 185, 129, 0.12);
+    color: #059669;
+    border: 1px solid rgba(16, 185, 129, 0.20);
+  }
+  .dark .badge-green {
+    background: rgba(16, 185, 129, 0.22);
+    color: #86EFAC;
+    border-color: rgba(16, 185, 129, 0.22);
+  }
+  .badge-amber {
+    background: rgba(245, 158, 11, 0.12);
+    color: #B45309;
+    border: 1px solid rgba(245, 158, 11, 0.20);
+  }
+  .dark .badge-amber {
+    background: rgba(245, 158, 11, 0.22);
+    color: #FDE68A;
+    border-color: rgba(245, 158, 11, 0.22);
+  }
+  .badge-red {
+    background: rgba(239, 68, 68, 0.10);
+    color: #DC2626;
+    border: 1px solid rgba(239, 68, 68, 0.18);
+  }
+  .dark .badge-red {
+    background: rgba(239, 68, 68, 0.22);
+    color: #FECACA;
+    border-color: rgba(239, 68, 68, 0.22);
+  }
+  .badge-blue {
+    background: rgba(59, 130, 246, 0.10);
+    color: #1D4ED8;
+    border: 1px solid rgba(59, 130, 246, 0.18);
+  }
+  .dark .badge-blue {
+    background: rgba(59, 130, 246, 0.22);
+    color: #BFDBFE;
+    border-color: rgba(59, 130, 246, 0.22);
+  }
+  .badge-brand {
+    background: var(--gradient-primary);
+    color: #FAFAFA;
+    box-shadow: 0 2px 10px rgba(15, 118, 110, 0.3);
+  }
+  .badge-zinc {
+    background: var(--color-surface);
+    color: var(--color-text-secondary);
+    border: 1px solid var(--color-border);
+  }
+  .badge-gold {
+    background: linear-gradient(135deg, rgba(212, 175, 55, 0.18) 0%, rgba(212, 175, 55, 0.08) 100%);
+    color: var(--color-accent-soft);
+    border: 1px solid rgba(212, 175, 55, 0.3);
+    box-shadow: 0 2px 10px rgba(212, 175, 55, 0.12);
+  }
+
+  /* Sidebar links - premium */
+  .sidebar-link {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    padding: 0.7rem 1rem;
+    border-radius: 1rem;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--color-text-secondary);
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    position: relative;
+  }
+  .sidebar-link:hover {
+    background-color: var(--color-card-hover);
+    color: var(--color-text-primary);
+    transform: translateX(3px);
+  }
+  .sidebar-link.active {
+    background: var(--gradient-primary);
+    color: #FAFAFA;
+    box-shadow: 0 6px 16px rgba(15, 118, 110, 0.32);
+  }
+
+  /* ── Layout primitives ── */
+  .page-hero {
+    @apply pt-24 pb-20;
+  }
+  .page-section {
+    @apply py-20;
+  }
+  .page-section-sm {
+    @apply py-16;
+  }
+  .page-section-lg {
+    @apply py-24;
+  }
+  .section-container {
+    @apply max-w-7xl mx-auto px-5 sm:px-6 lg:px-8;
+  }
+  .section-padding {
+    @apply py-16 md:py-24;
+  }
+  .eyebrow {
+    @apply text-xs font-semibold tracking-widest uppercase mb-3 block;
+    color: var(--color-accent);
+  }
+
+  /* ── Who-this-is-for pills — dark band that stays dark in light mode ──
+     Uses CSS variables so the inverse token swaps correctly. */
+  .store-type-pill {
+    background-color: var(--color-inverse-surface);
+    border: 1px solid var(--color-inverse-border);
+    border-radius: 0.75rem;
+    padding: 1.25rem 1rem;
+    text-align: center;
+    transition: border-color 0.2s ease;
+  }
+  .store-type-pill:hover {
+    border-color: rgba(255, 255, 255, 0.16);
+  }
+  .store-type-pill-icon {
+    color: rgba(255, 255, 255, 0.45);
+  }
+  .store-type-pill-label {
+    color: rgba(255, 255, 255, 0.75);
+  }
+
+  /* ── Problem/solution rows — always dark regardless of page theme ── */
+  .problem-row {
+    background-color: var(--color-inverse-surface);
+  }
+  .problem-cell {
+    border-color: var(--color-inverse-border);
+  }
+  .problem-text {
+    color: rgba(255, 255, 255, 0.75);
+  }
+
+  /* ── Table utilities ── */
+  .table-header-cell {
+    background-color: var(--color-surface);
+    color: var(--color-text-secondary);
+    font-weight: 600;
+  }
+  .table-row-alt {
+    background-color: rgba(0, 0, 0, 0.025);
+  }
+  .dark .table-row-alt {
+    background-color: rgba(255, 255, 255, 0.02);
+  }
+
+  /* ── Focus ring — keyboard nav ── */
+  .focus-ring {
+    @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/50 focus-visible:ring-offset-2;
+  }
+  .dark .focus-ring {
+    @apply focus-visible:ring-emerald-400/50;
+  }
+}
+
+/* ============================================================
+   Premium Animations & Utilities
+   ============================================================ */
+@layer utilities {
+  .font-display {
+    font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  }
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  @keyframes fadeUp {
+    0% {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  .animate-fade-up {
+    animation: fadeUp 0.75s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+
+  @keyframes shimmer {
+    0% {
+      background-position: -200% 0;
+    }
+    100% {
+      background-position: 200% 0;
+    }
+  }
+  .shimmer-text {
+    background: linear-gradient(90deg, #D4AF37 20%, #F5E1A4 50%, #D4AF37 80%);
+    background-size: 200% auto;
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+    animation: shimmer 4s linear infinite;
+  }
+
+  .bg-grid-pattern {
+    background-image: radial-gradient(circle at 1px 1px, var(--color-grid-dot) 1px, transparent 1px);
+    background-size: 32px 32px;
+  }
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* ============================================================
+   Final release motion utilities
+   ============================================================ */
+@keyframes dashboard-float {
+  0%, 100% { transform: translateY(0) rotate(-1deg); }
+  50% { transform: translateY(-7px) rotate(1deg); }
+}
+
+@keyframes dashboard-pulse {
+  0%, 100% { opacity: .55; transform: scale(1); }
+  50% { opacity: .9; transform: scale(1.06); }
+}
+
+@keyframes dashboard-shimmer {
+  0% { transform: translateX(-110%); }
+  100% { transform: translateX(110%); }
+}
+
+.admin-float {
+  animation: dashboard-float 5s ease-in-out infinite;
+}
+
+.admin-pulse {
+  animation: dashboard-pulse 3s ease-in-out infinite;
+}
+
+.admin-shimmer {
+  position: relative;
+  overflow: hidden;
+}
+
+.admin-shimmer::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  width: 45%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,.12), transparent);
+  transform: translateX(-110%);
+  animation: dashboard-shimmer 4.5s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .admin-float,
+  .admin-pulse,
+  .admin-shimmer::after {
+    animation: none !important;
+  }
+}
+
+
+/* ============================================================
+   MEETING AUTOMATOR 2026 — Consultation booking + admin system
+   ============================================================ */
+.booking-shell{
+  min-height:calc(100vh - 72px);
+  background:
+    radial-gradient(circle at 8% 0%,rgba(20,184,166,.10),transparent 28rem),
+    radial-gradient(circle at 92% 20%,rgba(16,185,129,.07),transparent 24rem),
+    var(--color-surface);
+  color:var(--color-text-primary);
+}
+.booking-hero{
+  max-width:1320px;margin:0 auto;padding:58px 28px 34px;
+  display:grid;grid-template-columns:minmax(0,1fr) 430px;gap:42px;align-items:end;
+}
+.booking-hero-compact{grid-template-columns:minmax(0,900px)}
+.booking-back{display:inline-flex;align-items:center;gap:8px;color:var(--color-text-secondary);font-size:13px;font-weight:700;margin-bottom:22px}
+.booking-back svg{width:15px;height:15px}
+.booking-back:hover{text-decoration:none;color:var(--color-primary)}
+.booking-eyebrow{display:inline-flex;align-items:center;gap:9px;border:1px solid rgba(15,118,110,.18);background:rgba(15,118,110,.07);color:#0f766e;border-radius:999px;padding:8px 12px;font-size:10px;font-weight:800;letter-spacing:.15em;text-transform:uppercase}
+.dark .booking-eyebrow{color:#5eead4;border-color:rgba(45,212,191,.18);background:rgba(20,184,166,.08)}
+.booking-dot{width:7px;height:7px;border-radius:50%;background:#10b981;box-shadow:0 0 0 5px rgba(16,185,129,.10)}
+.booking-hero h1{font-size:clamp(2.5rem,5vw,5rem);line-height:.98;letter-spacing:-.055em;margin:18px 0 16px;max-width:900px}
+.booking-hero h1 span{color:var(--color-primary)}
+.booking-hero>div>p{max-width:720px;font-size:17px;line-height:1.75}
+.booking-hero-card{display:grid;grid-template-columns:auto 1fr;gap:12px 13px;align-items:center;padding:18px;border:1px solid var(--color-border);border-radius:22px;background:var(--color-card);box-shadow:var(--shadow-card)}
+.booking-mini-icon{width:40px;height:40px;border-radius:13px;display:grid;place-items:center;background:rgba(15,118,110,.10);color:var(--color-primary)}
+.booking-mini-icon svg{width:18px}.booking-hero-card strong{display:block;font-size:13px}.booking-hero-card span{display:block;font-size:11px;color:var(--color-muted);margin-top:2px}
+.booking-mini-divider{grid-column:1/-1;height:1px;background:var(--color-border);margin:2px 0}
+.booking-container{max-width:1320px;margin:0 auto;padding:20px 28px 70px}
+.booking-progress{display:flex;align-items:center;max-width:760px;margin:0 auto 30px}
+.booking-step{display:flex;align-items:center;gap:9px;white-space:nowrap;color:var(--color-muted);font-size:11px;font-weight:800}
+.booking-step b{display:grid;place-items:center;width:34px;height:34px;border-radius:50%;border:1px solid var(--color-border-strong);background:var(--color-card);font-size:10px}
+.booking-step.active{color:var(--color-text-primary)}.booking-step.active b{background:var(--color-primary);color:white;border-color:var(--color-primary);box-shadow:0 8px 20px rgba(15,118,110,.22)}
+.booking-step.complete{color:var(--color-primary)}.booking-step.complete b{background:rgba(15,118,110,.10);border-color:rgba(15,118,110,.25);color:var(--color-primary)}
+.booking-step b svg{width:14px}.booking-progress-line{height:1px;background:var(--color-border);flex:1;margin:0 12px}.booking-progress-line.active{background:linear-gradient(90deg,var(--color-primary),var(--color-border))}
+.booking-grid{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:24px;align-items:start}
+.booking-panel{background:var(--color-card);border:1px solid var(--color-border);border-radius:26px;padding:30px;box-shadow:var(--shadow-card)}
+.booking-panel-heading{display:flex;gap:14px;align-items:flex-start;padding-bottom:24px;border-bottom:1px solid var(--color-border)}
+.booking-panel-heading>div:last-child{min-width:0}.booking-panel-heading>div:last-child>span{font-size:9px;font-weight:900;letter-spacing:.16em;color:var(--color-primary)}
+.booking-panel-heading h2{font-size:25px;margin:4px 0 3px;letter-spacing:-.035em}.booking-panel-heading p{font-size:13px;margin:0}
+.booking-icon{width:46px;height:46px;border-radius:15px;display:grid;place-items:center;background:rgba(15,118,110,.10);color:var(--color-primary);flex:0 0 auto}.booking-icon svg{width:21px}
+.booking-date-row{display:grid;grid-template-columns:260px 1fr;gap:16px;margin-top:25px;align-items:end}
+.booking-date-row label span,.booking-form-grid label>span{display:flex;align-items:center;gap:7px;font-size:12px;font-weight:800;margin-bottom:8px}
+.booking-date-row input,.booking-form-grid input,.booking-form-grid select,.booking-form-grid textarea{width:100%;border:1px solid var(--color-border-strong);background:var(--color-surface);color:var(--color-text-primary);border-radius:13px;padding:12px 13px;outline:none;transition:.2s}
+.booking-date-row input:focus,.booking-form-grid input:focus,.booking-form-grid select:focus,.booking-form-grid textarea:focus{border-color:rgba(15,118,110,.55);box-shadow:0 0 0 4px rgba(15,118,110,.08)}
+.booking-date-preview{min-height:49px;border:1px solid var(--color-border);background:rgba(15,118,110,.035);border-radius:14px;display:flex;align-items:center;gap:11px;padding:10px 13px}.booking-date-preview svg{width:17px;color:var(--color-primary)}.booking-date-preview small{display:block;font-size:9px;color:var(--color-muted);font-weight:800;text-transform:uppercase;letter-spacing:.1em}.booking-date-preview strong{display:block;font-size:13px;margin-top:2px}
+.booking-rulebar{display:flex;flex-wrap:wrap;gap:9px;margin-top:15px}.booking-rulebar span{font-size:10px;color:var(--color-text-secondary);background:var(--color-surface);border:1px solid var(--color-border);padding:7px 9px;border-radius:9px}.booking-rulebar b{color:var(--color-text-primary)}
+.booking-slots-head{display:flex;justify-content:space-between;gap:20px;align-items:end;margin-top:29px}.booking-slots-head h3{font-size:16px;margin:0}.booking-slots-head p{font-size:11px;margin:2px 0 0}.booking-slots-head>span{display:inline-flex;gap:6px;align-items:center;font-size:10px;font-weight:800;color:var(--color-primary)}.booking-slots-head svg{width:13px}
+.booking-slot-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:14px}
+.booking-slot{padding:13px 11px;border:1px solid var(--color-border);background:var(--color-surface);border-radius:13px;text-align:left;cursor:pointer;transition:.2s}.booking-slot:hover{border-color:rgba(15,118,110,.45);transform:translateY(-1px)}.booking-slot.selected{background:var(--color-primary);border-color:var(--color-primary);color:#fff;box-shadow:0 10px 22px rgba(15,118,110,.2)}.booking-slot span{display:block;font-size:13px;font-weight:800}.booking-slot small{display:block;font-size:9px;margin-top:4px;color:var(--color-muted)}.booking-slot.selected small{color:rgba(255,255,255,.72)}
+.booking-next{margin-top:24px;width:100%;min-height:52px;border:0;border-radius:15px;background:var(--gradient-primary);color:#fff;font-weight:800;font-size:13px;display:flex;align-items:center;justify-content:center;gap:9px;cursor:pointer;box-shadow:var(--shadow-button);transition:.25s}.booking-next:hover:not(:disabled){transform:translateY(-2px);box-shadow:var(--shadow-button-hover)}.booking-next:disabled{opacity:.45;cursor:not-allowed}.booking-next svg{width:17px}
+.booking-side{display:grid;gap:14px;position:sticky;top:20px}
+.booking-summary{border-radius:25px;padding:25px;background:#07110f;color:#fff;box-shadow:0 25px 70px -35px rgba(15,118,110,.65);border:1px solid rgba(255,255,255,.08)}
+.booking-summary-label{font-size:9px;font-weight:900;letter-spacing:.17em;color:rgba(255,255,255,.42)}.booking-summary-date{font-size:16px;font-weight:800;margin-top:14px}.booking-summary-time{font-size:38px;line-height:1;font-weight:900;letter-spacing:-.05em;color:#5eead4;margin-top:7px}.booking-summary-divider{height:1px;background:rgba(255,255,255,.09);margin:20px 0 14px}.booking-summary-item{display:flex;gap:9px;align-items:center;color:rgba(255,255,255,.68);font-size:11px;margin-top:10px}.booking-summary-item svg{width:14px;color:#5eead4;flex:0 0 auto}
+.booking-side-note{display:flex;gap:12px;padding:18px;border:1px solid var(--color-border);border-radius:20px;background:var(--color-card)}.booking-side-note>svg{width:18px;color:var(--color-primary);flex:0 0 auto;margin-top:2px}.booking-side-note strong{font-size:12px}.booking-side-note p{font-size:11px;line-height:1.6;margin:4px 0 0}
+.booking-slot-loading,.booking-inline-error,.booking-empty-slots,.booking-loading,.booking-error{margin-top:18px;padding:28px;border:1px dashed var(--color-border-strong);border-radius:16px;text-align:center;color:var(--color-text-secondary);font-size:12px}.booking-slot-loading{display:flex;justify-content:center;align-items:center;gap:8px}.booking-slot-loading svg{width:17px;color:var(--color-primary)}.booking-empty-slots svg,.booking-error>svg{width:30px;color:var(--color-primary);margin:0 auto 10px}.booking-empty-slots strong{display:block;color:var(--color-text-primary)}.booking-empty-slots p{font-size:11px;margin:4px 0 0}
+.booking-error{max-width:560px;margin:120px auto;padding:40px;background:var(--color-card);border-style:solid;box-shadow:var(--shadow-card)}.booking-error h1{font-size:24px;margin:6px 0}.booking-error p{font-size:13px}
+.booking-loading{max-width:500px;margin:120px auto;border-style:solid;background:var(--color-card)}
+.booking-details-grid{grid-template-columns:minmax(0,1fr) 320px}
+.booking-confirmed-slot{display:flex;align-items:center;gap:12px;margin-top:22px;padding:14px;border:1px solid rgba(15,118,110,.18);background:rgba(15,118,110,.055);border-radius:15px}.booking-confirmed-slot>svg{width:20px;color:var(--color-primary);flex:0 0 auto}.booking-confirmed-slot small,.booking-confirmed-slot span{display:block;font-size:9px;color:var(--color-muted)}.booking-confirmed-slot strong{display:block;font-size:13px;margin:2px 0}.booking-confirmed-slot a{margin-left:auto;font-size:11px;font-weight:800}
+.booking-form-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:25px}.booking-form-grid label.full{grid-column:1/-1}.booking-form-grid textarea{min-height:120px;resize:vertical}.booking-form-grid label>span svg{width:13px;color:var(--color-primary)}
+.booking-phone{display:flex;gap:8px}.booking-phone input{min-width:0}.booking-phone-field>small{font-size:9px;color:var(--color-muted);display:block;margin-top:5px}
+.booking-country{position:relative;flex:0 0 125px}.booking-country>button{height:100%;min-height:46px;width:100%;display:flex;align-items:center;gap:8px;padding:0 10px;border:1px solid var(--color-border-strong);background:var(--color-surface);color:var(--color-text-primary);border-radius:13px;font-size:12px;font-weight:800}.booking-country>button svg{width:13px;margin-left:auto}.booking-country-menu{position:absolute;z-index:100;top:calc(100% + 7px);left:0;width:320px;max-width:calc(100vw - 50px);padding:9px;border:1px solid var(--color-border-strong);border-radius:16px;background:var(--color-card);box-shadow:0 25px 70px rgba(0,0,0,.18)}.booking-country-menu>input{width:100%;padding:10px;border:1px solid var(--color-border);border-radius:10px;background:var(--color-surface);color:var(--color-text-primary);outline:none}.booking-country-menu>div{max-height:240px;overflow:auto;margin-top:6px}.booking-country-menu>div>button{width:100%;display:flex;align-items:center;gap:9px;padding:9px;border:0;background:transparent;color:var(--color-text-primary);border-radius:9px;text-align:left;cursor:pointer;font-size:11px}.booking-country-menu>div>button:hover{background:var(--color-surface)}.booking-country-menu>div>button b{margin-left:auto}
+.booking-privacy{display:flex;gap:9px;margin-top:18px;padding:13px;border-radius:13px;background:var(--color-surface);border:1px solid var(--color-border)}.booking-privacy svg{width:16px;color:var(--color-primary);flex:0 0 auto}.booking-privacy p{font-size:10px;line-height:1.6;margin:0}
+@media(max-width:1050px){.booking-hero{grid-template-columns:1fr}.booking-hero-card{max-width:600px}.booking-grid,.booking-details-grid{grid-template-columns:1fr}.booking-side{position:static;grid-template-columns:1fr 1fr}.booking-slot-grid{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:700px){.booking-hero{padding:35px 17px 20px}.booking-container{padding:15px 17px 50px}.booking-hero h1{font-size:2.65rem}.booking-hero>div>p{font-size:14px}.booking-hero-card{grid-template-columns:auto 1fr}.booking-progress{margin-bottom:20px}.booking-step span{display:none}.booking-progress-line{margin:0 7px}.booking-panel{padding:20px;border-radius:21px}.booking-date-row,.booking-form-grid{grid-template-columns:1fr}.booking-slot-grid{grid-template-columns:repeat(2,1fr)}.booking-side{grid-template-columns:1fr}.booking-form-grid label.full{grid-column:auto}.booking-country{flex-basis:112px}}
+@media(max-width:430px){.booking-slot-grid{grid-template-columns:1fr 1fr}.booking-hero h1{font-size:2.25rem}.booking-hero-card{padding:14px}.booking-rulebar span{width:100%}}
+/* Admin shell */
+.admin-shell{background:#f5f7f8;color:#101918}.dark .admin-shell{background:#070a0a;color:#f5f7f7}
+.admin-sidebar{background:rgba(255,255,255,.94);border-right:1px solid #e6ecea;backdrop-filter:blur(18px)}.dark .admin-sidebar{background:rgba(12,17,16,.96);border-color:#1e2926}
+.admin-sidebar .sidebar-link{margin:3px 8px;padding:10px 12px;border-radius:12px;color:#66736f;display:flex;align-items:center;gap:10px;font-size:12px;font-weight:700;transition:.2s}.dark .admin-sidebar .sidebar-link{color:#9ca9a5}.admin-sidebar .sidebar-link:hover{background:#eff7f5;color:#0f766e;text-decoration:none}.dark .admin-sidebar .sidebar-link:hover{background:#12201d;color:#5eead4}.admin-sidebar .sidebar-link.active{background:linear-gradient(135deg,#0f766e,#0d9488);color:white;box-shadow:0 9px 22px rgba(15,118,110,.2)}
+.admin-topbar{background:rgba(255,255,255,.82);border-bottom:1px solid #e6ecea;backdrop-filter:blur(18px)}.dark .admin-topbar{background:rgba(9,13,12,.86);border-color:#1e2926}
+.admin-main{background:radial-gradient(circle at 95% 0%,rgba(20,184,166,.055),transparent 25rem)}
+.admin-main h1,.admin-main h2,.admin-main h3{letter-spacing:-.035em}
+
+
+/* ============================================================
+   ADMIN CONTROL CENTER — premium product shell
+   ============================================================ */
+.admin-shell {
+  background:
+    radial-gradient(circle at 0% 0%, rgba(20,184,166,.075), transparent 24rem),
+    radial-gradient(circle at 100% 100%, rgba(212,175,55,.045), transparent 22rem),
+    var(--color-surface);
+}
+.dark .admin-shell {
+  background:
+    radial-gradient(circle at 0% 0%, rgba(20,184,166,.09), transparent 26rem),
+    radial-gradient(circle at 100% 100%, rgba(212,175,55,.035), transparent 24rem),
+    #070a0a;
+}
+.admin-sidebar {
+  box-shadow: 12px 0 40px rgba(15,23,42,.025);
+}
+.dark .admin-sidebar { box-shadow: 12px 0 50px rgba(0,0,0,.22); }
+.admin-sidebar .sidebar-link {
+  min-height: 40px;
+  position: relative;
+  border: 1px solid transparent;
+}
+.admin-sidebar .sidebar-link.active::before {
+  content: ""; position:absolute; left:-1px; top:9px; bottom:9px; width:3px;
+  border-radius:999px; background:rgba(255,255,255,.92);
+}
+.admin-topbar { box-shadow: 0 1px 0 rgba(15,23,42,.02), 0 8px 30px rgba(15,23,42,.025); }
+.dark .admin-topbar { box-shadow: 0 1px 0 rgba(255,255,255,.02), 0 10px 35px rgba(0,0,0,.16); }
+.admin-page-title {
+  font-size: clamp(1.05rem, 1.6vw, 1.35rem);
+  font-weight: 800; letter-spacing: -.03em;
+}
+.admin-eyebrow {
+  display:inline-flex; align-items:center; gap:.45rem;
+  font-size:9px; font-weight:900; text-transform:uppercase; letter-spacing:.16em;
+  color:var(--color-primary);
+}
+.admin-card {
+  border:1px solid var(--color-border);
+  background:var(--color-card);
+  border-radius:20px;
+  box-shadow:0 1px 2px rgba(15,23,42,.025), 0 14px 40px rgba(15,23,42,.045);
+}
+.dark .admin-card { box-shadow:0 1px 2px rgba(0,0,0,.3), 0 20px 50px rgba(0,0,0,.16); }
+.admin-card-hover { transition: transform .22s ease, box-shadow .22s ease, border-color .22s ease; }
+.admin-card-hover:hover { transform:translateY(-2px); box-shadow:0 18px 45px rgba(15,23,42,.08); border-color:rgba(15,118,110,.18); }
+.dark .admin-card-hover:hover { box-shadow:0 22px 55px rgba(0,0,0,.3); }
+.admin-status-dot { width:7px; height:7px; border-radius:999px; background:#22c55e; box-shadow:0 0 0 4px rgba(34,197,94,.1); }

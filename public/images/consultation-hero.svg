@@ -1,0 +1,67 @@
+<svg width="1600" height="900" viewBox="0 0 1600 900" fill="none" xmlns="http://www.w3.org/2000/svg">
+<defs>
+ <linearGradient id="bg" x1="80" y1="40" x2="1500" y2="860" gradientUnits="userSpaceOnUse">
+  <stop stop-color="#071C1B"/><stop offset=".48" stop-color="#0B1022"/><stop offset="1" stop-color="#17112C"/>
+ </linearGradient>
+ <linearGradient id="teal" x1="260" y1="160" x2="1260" y2="760" gradientUnits="userSpaceOnUse">
+  <stop stop-color="#2DD4BF"/><stop offset="1" stop-color="#0F766E"/>
+ </linearGradient>
+ <linearGradient id="violet" x1="1000" y1="140" x2="1420" y2="650" gradientUnits="userSpaceOnUse">
+  <stop stop-color="#8B5CF6"/><stop offset="1" stop-color="#2563EB"/>
+ </linearGradient>
+ <filter id="blur"><feGaussianBlur stdDeviation="60"/></filter>
+ <filter id="shadow"><feDropShadow dx="0" dy="24" stdDeviation="32" flood-opacity=".35"/></filter>
+</defs>
+<rect width="1600" height="900" rx="44" fill="url(#bg)"/>
+<circle cx="260" cy="180" r="210" fill="#14B8A6" opacity=".18" filter="url(#blur)"/>
+<circle cx="1320" cy="190" r="240" fill="#6366F1" opacity=".18" filter="url(#blur)"/>
+<circle cx="1200" cy="790" r="260" fill="#D4AF37" opacity=".07" filter="url(#blur)"/>
+<!-- calendar panel -->
+<rect x="130" y="120" width="860" height="650" rx="34" fill="#0D1118" stroke="white" stroke-opacity=".12" filter="url(#shadow)"/>
+<rect x="130" y="120" width="860" height="96" rx="34" fill="white" fill-opacity=".045"/>
+<text x="180" y="166" fill="#99F6E4" font-family="Arial" font-size="18" font-weight="700" letter-spacing="3">CONSULTATION SCHEDULER</text>
+<text x="180" y="202" fill="white" fill-opacity=".58" font-family="Arial" font-size="15">Live availability • Secure booking • Smart follow-up</text>
+<rect x="180" y="260" width="270" height="82" rx="18" fill="#111827" stroke="white" stroke-opacity=".08"/>
+<text x="205" y="293" fill="white" fill-opacity=".5" font-family="Arial" font-size="13">DATE</text>
+<text x="205" y="325" fill="white" font-family="Arial" font-size="22" font-weight="700">Monday, 10 Aug</text>
+<g opacity=".96">
+<rect x="480" y="260" width="220" height="82" rx="18" fill="url(#teal)"/>
+<text x="505" y="292" fill="white" fill-opacity=".72" font-family="Arial" font-size="13">NEXT OPEN SLOT</text>
+<text x="505" y="325" fill="white" font-family="Arial" font-size="22" font-weight="700">10:30 AM</text>
+</g>
+<text x="180" y="398" fill="white" font-family="Arial" font-size="16" font-weight="700">Available consultation slots</text>
+<g>
+<rect x="180" y="425" width="190" height="76" rx="16" fill="#111827" stroke="#2DD4BF" stroke-opacity=".7"/>
+<text x="205" y="458" fill="#99F6E4" font-family="Arial" font-size="15" font-weight="700">10:00 AM</text>
+<text x="205" y="482" fill="white" fill-opacity=".45" font-family="Arial" font-size="12">1 spot left</text>
+<rect x="390" y="425" width="190" height="76" rx="16" fill="#111827" stroke="white" stroke-opacity=".1"/>
+<text x="415" y="458" fill="white" font-family="Arial" font-size="15" font-weight="700">10:30 AM</text>
+<text x="415" y="482" fill="white" fill-opacity=".45" font-family="Arial" font-size="12">1 spot left</text>
+<rect x="600" y="425" width="190" height="76" rx="16" fill="#111827" stroke="white" stroke-opacity=".1"/>
+<text x="625" y="458" fill="white" font-family="Arial" font-size="15" font-weight="700">11:00 AM</text>
+<text x="625" y="482" fill="white" fill-opacity=".45" font-family="Arial" font-size="12">2 spots left</text>
+<rect x="810" y="425" width="120" height="76" rx="16" fill="#111827" stroke="white" stroke-opacity=".1"/>
+<text x="828" y="458" fill="white" font-family="Arial" font-size="14" font-weight="700">11:30</text>
+<text x="828" y="482" fill="white" fill-opacity=".45" font-family="Arial" font-size="12">Open</text>
+</g>
+<rect x="180" y="540" width="750" height="170" rx="22" fill="white" fill-opacity=".035" stroke="white" stroke-opacity=".07"/>
+<circle cx="235" cy="595" r="30" fill="url(#violet)"/>
+<text x="222" y="603" fill="white" font-family="Arial" font-size="20" font-weight="700">BH</text>
+<text x="285" y="588" fill="white" font-family="Arial" font-size="17" font-weight="700">Private strategy consultation</text>
+<text x="285" y="615" fill="white" fill-opacity=".5" font-family="Arial" font-size="13">30 minutes • Google Meet • Calendar invite</text>
+<rect x="285" y="645" width="155" height="34" rx="10" fill="#14B8A6" fill-opacity=".18"/>
+<text x="308" y="667" fill="#99F6E4" font-family="Arial" font-size="12" font-weight="700">SECURE MANAGEMENT</text>
+<!-- floating card -->
+<rect x="1060" y="260" width="400" height="310" rx="30" fill="#10131D" stroke="white" stroke-opacity=".12" filter="url(#shadow)"/>
+<rect x="1095" y="295" width="330" height="52" rx="14" fill="white" fill-opacity=".045"/>
+<circle cx="1123" cy="321" r="12" fill="#2DD4BF"/>
+<text x="1150" y="327" fill="white" font-family="Arial" font-size="15" font-weight="700">Booking confirmed</text>
+<text x="1095" y="392" fill="white" fill-opacity=".45" font-family="Arial" font-size="12">CUSTOMER</text>
+<text x="1095" y="420" fill="white" font-family="Arial" font-size="20" font-weight="700">One-to-one consultation</text>
+<text x="1095" y="464" fill="white" fill-opacity=".45" font-family="Arial" font-size="12">Monday • 10:30 AM</text>
+<rect x="1095" y="495" width="150" height="40" rx="12" fill="url(#teal)"/>
+<text x="1125" y="520" fill="white" font-family="Arial" font-size="13" font-weight="700">JOIN MEETING</text>
+<circle cx="1390" cy="735" r="86" fill="url(#violet)" opacity=".9"/>
+<circle cx="1390" cy="735" r="42" fill="white" fill-opacity=".1"/>
+<path d="M1370 735h40M1390 715v40" stroke="white" stroke-width="5" stroke-linecap="round"/>
+</svg>
