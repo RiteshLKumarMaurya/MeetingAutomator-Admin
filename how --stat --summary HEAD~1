@@ -1,0 +1,78 @@
+[33mcommit d98a4d4bb3aa56bd1c9e7f4bba7b11298abbe5aa[m
+Author: RiteshLKumarMaurya <rs123f5@gmail.com>
+Date:   Tue Aug 4 22:06:59 2026 +0530
+
+    fixed google auth and migrate to grocerflow
+
+ .env.example                                    |   12 [32m+[m[31m-[m
+ AUDIT_REPORT.md                                 |    6 [32m+[m[31m-[m
+ DEPLOYMENT.md                                   |   42 [32m+[m[31m-[m
+ README.md                                       |   14 [32m+[m[31m-[m
+ info                                            |    2 [32m+[m[31m-[m
+ package-lock.json                               |    6 [32m+[m[31m-[m
+ package.json                                    |    4 [32m+[m[31m-[m
+ public/android-chrome-192x192.png               |  Bin [31m39933[m -> [32m0[m bytes
+ public/android-chrome-512x512.png               |  Bin [31m88893[m -> [32m0[m bytes
+ public/apple-icon.png                           |  Bin [31m0[m -> [32m64063[m bytes
+ public/apple-touch-icon.png                     |  Bin [31m13370[m -> [32m0[m bytes
+ public/demo.mp4                                 |  Bin [31m0[m -> [32m10725979[m bytes
+ public/demo1.mp4                                |  Bin [31m0[m -> [32m32831307[m bytes
+ public/favicon-96x96.png                        |  Bin [31m6344[m -> [32m0[m bytes
+ public/favicon.ico                              |  Bin [31m15086[m -> [32m4286[m bytes
+ public/favicon.svg                              |    1 [31m-[m
+ public/firebase-messaging-sw.js                 |    8 [32m+[m[31m-[m
+ public/full-logo-dark.png                       |  Bin [31m0[m -> [32m597412[m bytes
+ public/full-logo.png                            |  Bin [31m0[m -> [32m511785[m bytes
+ public/full_brand_logo_dark_png.png             |  Bin [31m0[m -> [32m1806572[m bytes
+ public/icon-without-circle.png                  |  Bin [31m0[m -> [32m250031[m bytes
+ public/icon.png                                 |  Bin [31m0[m -> [32m314640[m bytes
+ public/icon.svg                                 |  350 [31m--------[m
+ public/logo-dark-without-circle.png             |  Bin [31m0[m -> [32m292486[m bytes
+ public/logo-dark.png                            |  Bin [31m0[m -> [32m379009[m bytes
+ public/logo-icon.png                            |  Bin [31m30151[m -> [32m314640[m bytes
+ public/logo-icon.svg                            |  350 [31m--------[m
+ public/logo-without-circle.png                  |  Bin [31m0[m -> [32m285239[m bytes
+ public/logo.png                                 |  Bin [31m41262[m -> [32m361063[m bytes
+ public/logo.svg                                 | 1004 [31m-----------------------[m
+ public/png.png                                  |  Bin [31m0[m -> [32m109594[m bytes
+ public/png2.png                                 |  Bin [31m0[m -> [32m1648462[m bytes
+ public/site.webmanifest                         |   26 [32m+[m[31m-[m
+ src/app/about/page.tsx                          |   10 [32m+[m[31m-[m
+ src/app/contact/ContactPageClient.tsx           |   10 [32m+[m[31m-[m
+ src/app/contact/page.tsx                        |    4 [32m+[m[31m-[m
+ src/app/features/FeaturesPageClient.tsx         |    4 [32m+[m[31m-[m
+ src/app/features/page.tsx                       |    8 [32m+[m[31m-[m
+ src/app/how-to-use/page.tsx                     |    4 [32m+[m[31m-[m
+ src/app/layout.tsx                              |  149 [32m++[m[31m--[m
+ src/app/login/LoginPageClient.tsx               |  363 [32m++++[m[31m----[m
+ src/app/login/page.tsx                          |    2 [32m+[m[31m-[m
+ src/app/packages/PackagesPageClient.tsx         |    4 [32m+[m[31m-[m
+ src/app/packages/[slug]/PackageDetailClient.tsx |    8 [32m+[m[31m-[m
+ src/app/page.tsx                                |   12 [32m+[m[31m-[m
+ src/app/privacy/page.tsx                        |    8 [32m+[m[31m-[m
+ src/app/projects/[slug]/page.tsx                |    6 [32m+[m[31m-[m
+ src/app/projects/page.tsx                       |    4 [32m+[m[31m-[m
+ src/app/register/RegisterPageClient.tsx         |  335 [32m+++[m[31m-----[m
+ src/app/register/page.tsx                       |    2 [32m+[m[31m-[m
+ src/app/robots.ts                               |    2 [32m+[m[31m-[m
+ src/app/services/ServicesPageClient.tsx         |    2 [32m+[m[31m-[m
+ src/app/services/[slug]/ServiceDetailClient.tsx |    2 [32m+[m[31m-[m
+ src/app/services/[slug]/page.tsx                |    6 [32m+[m[31m-[m
+ src/app/services/page.tsx                       |    4 [32m+[m[31m-[m
+ src/app/sitemap.ts                              |    2 [32m+[m[31m-[m
+ src/app/terms/page.tsx                          |   10 [32m+[m[31m-[m
+ src/app/testimonials/TestimonialsPageClient.tsx |    2 [32m+[m[31m-[m
+ src/app/testimonials/page.tsx                   |    2 [32m+[m[31m-[m
+ src/components/auth/AuthProvider.tsx            |    2 [32m+[m[31m-[m
+ src/components/auth/GoogleSignInButton.tsx      |  130 [32m+[m[31m--[m
+ src/components/common/Logo.tsx                  |   21 [32m+[m[31m-[m
+ src/components/layout/Footer.tsx                |   10 [32m+[m[31m-[m
+ src/components/layout/LayoutWrapper.tsx         |   23 [32m+[m
+ src/components/layout/Navbar.tsx                |   18 [32m+[m[31m-[m
+ src/components/sections/ContactCta.tsx          |    2 [32m+[m[31m-[m
+ src/hooks/useGoogleAuth.ts                      |  125 [32m++[m[31m-[m
+ src/lib/apiClient.ts                            |    6 [32m+[m[31m-[m
+ src/lib/cdn.ts                                  |    2 [32m+[m[31m-[m
+ src/lib/techBusinessContent.ts                  |    2 [32m+[m[31m-[m
+ src/store/authStore.ts                          |    4 [32m+[m[31m-[m
+ 71 files changed, 703 insertions(+), 2432 deletions(-)

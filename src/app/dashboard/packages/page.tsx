@@ -66,7 +66,7 @@ function PackageModal({
           return {
             serviceId: svc.id,
             displayOrder: ps.displayOrder ?? 0,
-            highlighted: false,
+            highlighted: ps.highlighted ?? false,
             service: svc,
             mappingId: ps.id,
           };

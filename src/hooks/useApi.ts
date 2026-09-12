@@ -293,6 +293,25 @@ export function useUpdateMe() {
   });
 }
 // ─── Admin Hooks ─────────────────────────────────────────────
+export function useAdminOffers() { return useQuery({ queryKey: ['admin','offers'], queryFn: () => adminApi.getOffers().then(r => r.data.data) }); }
+export function useAdminSiteModules() { return useQuery({ queryKey: ['admin','site-modules'], queryFn: () => adminApi.getSiteModules().then(r => r.data.data) }); }
+
+export function useAdminContacts(filters: { page?: number; size?: number; sortBy?: string; direction?: string; status?: string; source?: string; email?: string; assignedToId?: number } = {}) {
+  return useQuery({
+    queryKey: ['admin', 'contacts', filters],
+    queryFn: () => adminApi.getContactRequests(filters).then((r) => r.data.data),
+  });
+}
+
+export function useUpdateContactStatus() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, status }: { id: number; status: import('@/types').LeadStatus }) =>
+      adminApi.updateContactRequestStatus(id, status),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['admin', 'contacts'] }),
+  });
+}
+
 export function useAdminUsers(page = 0, size = 10) {
   return useQuery({
     queryKey: ['admin', 'users', page, size],

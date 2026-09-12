@@ -6,7 +6,7 @@ import { useEffect, useState, useRef } from 'react';
 import {
   LayoutDashboard, FolderKanban, Package, Layers, Cpu,
   Image, Star, ListChecks, Link2, Globe, Settings, Users, ShieldCheck,
-  Menu, LogOut, ChevronRight, Layers2, ChevronDown, Bell, CalendarDays,
+  Menu, LogOut, ChevronRight, Layers2, ChevronDown, Bell, CalendarDays, Tag, PanelTop,
 } from 'lucide-react';
 import { useMe } from '@/hooks/useApi';
 import { useAuthStore } from '@/store/authStore';
@@ -23,11 +23,13 @@ const navItems = [
   { href: '/dashboard/projects', label: 'Projects', icon: FolderKanban, group: 'Business' },
   { href: '/dashboard/bundles', label: 'Project Bundles', icon: Layers2, group: 'Business' },
   { href: '/dashboard/packages', label: 'Packages', icon: Package, group: 'Business' },
+  { href: '/dashboard/offers', label: 'Offers', icon: Tag, group: 'Business' },
   { href: '/dashboard/services', label: 'Services', icon: Layers, group: 'Business' },
   { href: '/dashboard/technologies', label: 'Technologies', icon: Cpu, group: 'Content' },
   { href: '/dashboard/testimonials', label: 'Testimonials', icon: Star, group: 'Content' },
   { href: '/dashboard/features', label: 'Features', icon: ListChecks, group: 'Content' },
   { href: '/dashboard/banners', label: 'Banners', icon: Image, group: 'Content' },
+  { href: '/dashboard/site-modules', label: 'Site Modules', icon: PanelTop, group: 'Content' },
   { href: '/dashboard/web-links', label: 'Web Links', icon: Link2, group: 'Content' },
   { href: '/dashboard/links', label: 'Links', icon: Link2, group: 'Content' },
   { href: '/dashboard/users', label: 'Users', icon: Users, group: 'Access' },

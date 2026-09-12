@@ -248,6 +248,11 @@ export default function ConsultationSettingsPage() {
             </label>
           </div>
 
+          <div className="mt-5 flex flex-col gap-3 rounded-2xl border border-brand-200 bg-brand-50/50 p-4 dark:border-brand-900/50 dark:bg-brand-950/20 sm:flex-row sm:items-center sm:justify-between">
+            <div><p className="text-sm font-bold">Need 24/7 availability?</p><p className="mt-1 text-xs text-secondary">Set 00:00 → 00:00 and enable all seven days. The backend treats equal times as a full 24-hour window.</p></div>
+            <button type="button" className="btn-secondary whitespace-nowrap" onClick={() => { update('startTime','00:00'); update('endTime','00:00'); update('workingDays',[...DAYS]); }}>Set 24/7</button>
+          </div>
+
           <div className="mt-7 grid gap-5 sm:grid-cols-2">
             <Field label="Start time" hint="First slot can begin here.">
               <input type="time" value={form.startTime} onChange={(e) => update('startTime', e.target.value)} className="input w-full" />

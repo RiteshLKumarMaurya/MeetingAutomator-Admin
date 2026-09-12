@@ -390,6 +390,26 @@ export interface BannerResponse {
 
 
 // ============================================================
+// Offers & Site Modules
+// ============================================================
+export type DiscountType = 'PERCENTAGE' | 'FIXED';
+export interface OfferPackageResponse { id: number; name: string; slug: string; }
+export interface OfferResponse {
+  id: number; name: string; slug: string; heading: string | null; description: string | null;
+  eligibility: string | null; discountType: DiscountType; discountValue: number; ctaText: string | null;
+  startAt: string; endAt: string | null; active: boolean; featured: boolean; displayOrder: number;
+  packages: OfferPackageResponse[]; createdAt: string; updatedAt: string;
+}
+export interface OfferRequest {
+  name: string; slug?: string; heading?: string; description?: string; eligibility?: string;
+  discountType: DiscountType; discountValue: number; ctaText?: string; startAt: string; endAt?: string;
+  active: boolean; featured: boolean; displayOrder: number; packageIds: number[];
+}
+export interface SiteModuleResponse {
+  id: number; moduleKey: string; name: string; description: string | null; active: boolean; displayOrder: number;
+}
+
+// ============================================================
 // Users
 // ============================================================
 
@@ -483,6 +503,7 @@ export interface PackageServiceResponse {
   id: number;                     // mapping id
   serviceResponse: ServiceResponse;  // full service object
   displayOrder: number;
+  highlighted: boolean;
 }
 
 export interface PackageResponse {
@@ -550,6 +571,49 @@ export interface AdminNotificationRequest {
 }
 
 export type LeadSource = 'WEBSITE' | 'GOOGLE' | 'LINKEDIN' | 'FACEBOOK' | 'INSTAGRAM' | 'REFERRAL' | 'WHATSAPP' | 'OTHER';
+
+export type LeadStatus = 'NEW' | 'CONTACTED' | 'PROPOSAL_SENT' | 'NEGOTIATION' | 'WON' | 'LOST';
+
+export interface ContactRequestResponse {
+  id: number;
+  name: string;
+  email: string;
+  countryCode?: string | null;
+  phone?: string | null;
+  companyName?: string | null;
+  country?: string | null;
+  status: LeadStatus;
+  source: LeadSource;
+  packageId?: number | null;
+  packageName?: string | null;
+  budgetMin?: number | null;
+  budgetMax?: number | null;
+  message?: string | null;
+  contactedAt?: string | null;
+  closedAt?: string | null;
+  notes?: string | null;
+  assignedToId?: number | null;
+  assignedToName?: string | null;
+  createdAt: string;
+  updatedAt?: string | null;
+  currencyCode?: CurrencyCode | null;
+  businessModelType?: string | null;
+  projectIdea?: string | null;
+  sharePercentage?: number | null;
+  partnershipAccepted?: boolean | null;
+}
+
+export interface ContactRequestSearchRequest {
+  page: number;
+  size: number;
+  sortBy?: string;
+  direction?: 'ASC' | 'DESC' | string;
+  status?: LeadStatus;
+  source?: LeadSource;
+  email?: string;
+  assignedToId?: number;
+}
+
 
 // ============================================================
 // Missing Auth DTOs (from AuthController)

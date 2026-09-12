@@ -7,7 +7,7 @@ import type {
   PhonePasswordLoginResponse, PhonePasswordRegisterResponse,
   GoogleLoginRequest, LoginRequest, PhonePasswordRegisterRequest,TechnicalIssueHandleSettingResponse,SettingResponse,
   LogoutRequest, UserProfileResponse, AdminUserSummaryResponse,NotificationResponse, RoleResponse, RoleRequest,
-  FeatureResponse, LinkResponse, WebLinkResponse,
+  FeatureResponse, LinkResponse, WebLinkResponse, OfferResponse, OfferRequest, SiteModuleResponse, ContactRequestResponse, LeadStatus,
   MediaResponse,
 ProjectTechnologyResponse, ProjectExternalLinkResponse, AddProjectTechnologyRequest, AddProjectLinkRequest,
   AvailableSlotResponse, CreateConsultationBookingRequest, ConsultationBookingResponse,
@@ -396,7 +396,34 @@ updateWebLink: (id: number, data: { name: string; url: string; type: string; isA
   apiClient.patch<ApiResponse<PackageResponse>>(`/api/v1/admin/packages/${packageId}/services/reorder`, data),
 
 
-      // ── Notifications (Admin) ────────────────────────────────────
+      // ── Offers ─────────────────────────────────────────────────
+  getOffers: () => apiClient.get<ApiResponse<OfferResponse[]>>('/api/v1/admin/offers'),
+  getOfferById: (id: number) => apiClient.get<ApiResponse<OfferResponse>>(`/api/v1/admin/offers/${id}`),
+  createOffer: (data: OfferRequest) => apiClient.post<ApiResponse<OfferResponse>>('/api/v1/admin/offers', data),
+  updateOffer: (id: number, data: OfferRequest) => apiClient.put<ApiResponse<OfferResponse>>(`/api/v1/admin/offers/${id}`, data),
+  enableOffer: (id: number) => apiClient.patch<ApiResponse<OfferResponse>>(`/api/v1/admin/offers/${id}/enable`),
+  disableOffer: (id: number) => apiClient.patch<ApiResponse<OfferResponse>>(`/api/v1/admin/offers/${id}/disable`),
+  deleteOffer: (id: number) => apiClient.delete<ApiResponse<void>>(`/api/v1/admin/offers/${id}`),
+
+  // ── Site Modules ────────────────────────────────────────────
+  getSiteModules: () => apiClient.get<ApiResponse<SiteModuleResponse[]>>('/api/v1/admin/site-modules'),
+  enableSiteModule: (id: number) => apiClient.patch<ApiResponse<SiteModuleResponse>>(`/api/v1/admin/site-modules/${id}/enable`),
+  disableSiteModule: (id: number) => apiClient.patch<ApiResponse<SiteModuleResponse>>(`/api/v1/admin/site-modules/${id}/disable`),
+  updateSiteModule: (id: number, data: { name?: string; description?: string; displayOrder?: number; active?: boolean }) => apiClient.put<ApiResponse<SiteModuleResponse>>(`/api/v1/admin/site-modules/${id}`, null, { params: data }),
+
+  // ── Contact Requests (Admin) ────────────────────────────────
+  getContactRequests: (params?: { page?: number; size?: number; sortBy?: string; direction?: string; status?: string; source?: string; email?: string; assignedToId?: number }) =>
+    apiClient.get<ApiResponse<PageResponse<ContactRequestResponse>>>('/api/v1/admin/contact-requests', { params }),
+  getContactRequestById: (id: number) =>
+    apiClient.get<ApiResponse<ContactRequestResponse>>(`/api/v1/admin/contact-requests/${id}`),
+  updateContactRequest: (id: number, data: Partial<ContactRequestResponse>) =>
+    apiClient.patch<ApiResponse<ContactRequestResponse>>(`/api/v1/admin/contact-requests/${id}`, data),
+  updateContactRequestStatus: (id: number, status: LeadStatus) =>
+    apiClient.patch<ApiResponse<ContactRequestResponse>>(`/api/v1/admin/contact-requests/${id}/status`, null, { params: { status } }),
+  deleteContactRequest: (id: number) =>
+    apiClient.delete<ApiResponse<void>>(`/api/v1/admin/contact-requests/${id}`),
+
+  // ── Notifications (Admin) ────────────────────────────────────
 sendNotification: (data: FormData) =>
   apiClient.post<ApiResponse<void>>('/api/v1/admin/notifications/send', data, {
     headers: { 'Content-Type': 'multipart/form-data' },

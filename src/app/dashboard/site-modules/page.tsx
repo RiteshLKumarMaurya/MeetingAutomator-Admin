@@ -1,0 +1,15 @@
+'use client';
+import { useState } from 'react';
+import { Eye, EyeOff, GripVertical, Save, RefreshCw } from 'lucide-react';
+import { useAdminSiteModules } from '@/hooks/useApi';
+import { adminApi } from '@/services/api';
+import { useQueryClient } from '@tanstack/react-query';
+import toast from 'react-hot-toast';
+import type { SiteModuleResponse } from '@/types';
+
+export default function SiteModulesPage(){
+ const qc=useQueryClient(); const {data:modules=[],isLoading,isError,refetch}=useAdminSiteModules(); const [saving,setSaving]=useState<number|null>(null);
+ async function toggle(m:SiteModuleResponse){setSaving(m.id);try{if(m.active)await adminApi.disableSiteModule(m.id);else await adminApi.enableSiteModule(m.id);await qc.invalidateQueries({queryKey:['admin','site-modules']});toast.success(`${m.name} ${m.active?'hidden':'visible'}`)}catch(e:any){toast.error(e?.response?.data?.message||'Failed to update module')}finally{setSaving(null)}}
+ async function updateOrder(m:SiteModuleResponse,value:number){setSaving(m.id);try{await adminApi.updateSiteModule(m.id,{displayOrder:Math.max(0,value)});await qc.invalidateQueries({queryKey:['admin','site-modules']})}catch(e:any){toast.error(e?.response?.data?.message||'Failed to save order')}finally{setSaving(null)}}
+ return <div className="space-y-6"><div><h1 className="font-display text-2xl font-bold text-zinc-900 dark:text-zinc-100">Site Modules</h1><p className="text-sm text-zinc-500 mt-0.5">Control which public website sections are visible without changing frontend code.</p></div>{isError?<div className="card-base p-8 text-center"><p className="text-sm text-zinc-500">Could not load site modules.</p><button className="btn-primary mt-4" onClick={()=>refetch()}>Retry</button></div>:<div className="card-base overflow-hidden">{isLoading?<div className="p-8 flex items-center gap-2 text-sm text-zinc-500"><RefreshCw className="w-4 h-4 animate-spin"/> Loading modules…</div>:modules.map(m=><div key={m.id} className="flex items-center gap-4 border-b last:border-0 border-zinc-200 dark:border-zinc-800 p-4"><GripVertical className="w-4 h-4 text-zinc-300"/><div className="flex-1 min-w-0"><div className="flex items-center gap-2"><strong className="text-sm">{m.name}</strong><span className="text-[10px] font-mono text-zinc-400">{m.moduleKey}</span></div><p className="text-xs text-zinc-500 mt-1">{m.description}</p></div><label className="hidden sm:block text-[10px] uppercase tracking-wider text-zinc-400">Order<input className="input-base w-20 mt-1 py-1.5" type="number" min="0" defaultValue={m.displayOrder} onBlur={e=>Number(e.target.value)!==m.displayOrder&&updateOrder(m,Number(e.target.value))}/></label><button disabled={saving===m.id} onClick={()=>toggle(m)} className={`inline-flex items-center gap-2 rounded-xl px-3 py-2 text-xs font-semibold ${m.active?'bg-emerald-50 text-emerald-700':'bg-zinc-100 text-zinc-500'}`}>{m.active?<Eye className="w-4 h-4"/>:<EyeOff className="w-4 h-4"/>}{m.active?'Visible':'Hidden'}</button></div>)}</div>}</div>
+}
