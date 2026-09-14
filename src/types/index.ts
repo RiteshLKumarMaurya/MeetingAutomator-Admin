@@ -488,6 +488,7 @@ export interface ServiceTechnologyResponse {
 // Packages
 // ============================================================
 export type CurrencyCode = 'INR' | 'USD' | 'EUR' | 'GBP' | 'AED';
+export type PaymentMode = 'NONE' | 'PRE_PAYMENT' | 'POST_PAYMENT';
 
 
   //packages
@@ -514,6 +515,7 @@ export interface PackageResponse {
   longDescription: string;
   price: number;
   currencyCode: CurrencyCode;
+  paymentMode: PaymentMode;
   iconImage: MediaResponse | null;
   featured: boolean;
   displayOrder: number;
@@ -878,6 +880,13 @@ export interface BookingDetailsResponse {
   notes?: string | null;
   createdAt?: string | null;
   updatedAt?: string | null;
+  packageId?: number | null;
+  paymentMode?: PaymentMode | null;
+  paymentStatus?: 'NOT_REQUIRED' | 'PENDING' | 'PAID' | 'FAILED' | 'EXPIRED' | 'REFUNDED' | null;
+  paymentAmount?: number | null;
+  paymentCurrency?: string | null;
+  paymentExpiresAt?: string | null;
+  guestTimezone?: string | null;
 }
 
 export interface AdminBookingFilterRequest {

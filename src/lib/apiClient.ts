@@ -73,6 +73,14 @@ apiClient.interceptors.request.use(
     if (accessToken) {
       config.headers.Authorization = `Bearer ${accessToken}`;
     }
+
+    // Never force JSON for FormData. The browser must generate the
+    // multipart boundary itself; otherwise Spring rejects the request.
+    if (typeof FormData !== 'undefined' && config.data instanceof FormData) {
+      delete config.headers['Content-Type'];
+      delete config.headers['content-type'];
+    }
+
     return config;
   },
   (error) => Promise.reject(error)

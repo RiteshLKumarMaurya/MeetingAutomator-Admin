@@ -240,15 +240,9 @@ getUserById: (id: number) => apiClient.get<ApiResponse<UserProfileResponse>>(`/a
     apiClient.delete<ApiResponse<void>>(`/api/v1/admin/packages/${packageId}/services/${mappingId}`),
 // in services/api.ts inside adminApi
 createPackage: (data: FormData) =>
-  apiClient.post<ApiResponse<PackageResponse>>('/api/v1/admin/packages', data, {
-    headers: { 'Content-Type': 'multipart/form-data' },
-  }),
+  apiClient.post<ApiResponse<PackageResponse>>('/api/v1/admin/packages', data),
 updatePackage: (id: number, data: FormData) =>
-  apiClient.put<ApiResponse<PackageResponse>>(`/api/v1/admin/packages/${id}`, data, {
-    headers: { 'Content-Type': 'multipart/form-data' },
-  }),
-
-  
+  apiClient.put<ApiResponse<PackageResponse>>(`/api/v1/admin/packages/${id}`, data),
   // ── Services ───────────────────────────────────────────────
   getServices: (params?: { page?: number; size?: number }) =>
     apiClient.get<ApiResponse<PageResponse<ServiceResponse>>>('/api/v1/admin/services', {

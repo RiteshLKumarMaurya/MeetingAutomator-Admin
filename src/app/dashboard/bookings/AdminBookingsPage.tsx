@@ -348,6 +348,10 @@ function DetailModal({
                 <Info label="Lead source" value={data.leadSource?.replace(/_/g, ' ') || '—'} />
                 <Info label="Requested" value={formatDateTime(data.requestedAt)} icon={<Clock3 className="h-4 w-4" />} />
                 <Info label="Scheduled" value={formatDateTime(data.scheduledAt)} icon={<CalendarDays className="h-4 w-4" />} />
+                <Info label="Payment mode" value={data.paymentMode === 'PRE_PAYMENT' ? 'Pay before booking' : data.paymentMode === 'POST_PAYMENT' ? 'Pay after consultation' : 'No payment required'} />
+                <Info label="Payment status" value={data.paymentStatus?.replace(/_/g, ' ') || '—'} />
+                <Info label="Payment amount" value={data.paymentAmount != null ? `${data.paymentCurrency || ''} ${data.paymentAmount}`.trim() : '—'} />
+                <Info label="Guest timezone" value={data.guestTimezone || '—'} />
               </div>
 
               <div className="mt-4 rounded-2xl border border-zinc-200 bg-zinc-50 p-3 dark:border-zinc-800 dark:bg-zinc-800/35">

@@ -12,7 +12,7 @@ import { getMediaUrl } from '@/lib/cdn';;
 import { formatPrice, formatDate, cn } from '@/lib/utils';
 import toast from 'react-hot-toast';
 import { useQueryClient } from '@tanstack/react-query';
-import type { PackageResponse, ServiceResponse, CurrencyCode } from '@/types';
+import type { PackageResponse, ServiceResponse, CurrencyCode, PaymentMode } from '@/types';
 
 const CURRENCIES: { value: CurrencyCode; label: string; symbol: string }[] = [
   { value: 'INR', label: 'Indian Rupee', symbol: '₹' },
@@ -44,6 +44,7 @@ function PackageModal({
   const [currencyCode, setCurrencyCode] = useState<CurrencyCode>(
     (pkg?.currencyCode ?? 'USD') as CurrencyCode
   );
+  const [paymentMode, setPaymentMode] = useState<PaymentMode>(pkg?.paymentMode ?? 'NONE');
   const [displayOrder, setDisplayOrder] = useState(pkg?.displayOrder ?? 0);
   const [featured, setFeatured] = useState(pkg?.featured ?? false);
   const [active, setActive] = useState(pkg?.active ?? true);
@@ -231,6 +232,11 @@ function PackageModal({
       return;
     }
 
+    const numericPrice = Number(price);
+    if (!Number.isFinite(numericPrice) || numericPrice < 0) { toast.error('Price must be zero or greater'); return; }
+    if (paymentMode === 'NONE' && numericPrice !== 0) { toast.error('Free / no payment requires price 0'); return; }
+    if (paymentMode !== 'NONE' && numericPrice <= 0) { toast.error('Paid payment modes require a price greater than 0'); return; }
+
     setSaving(true);
     try {
       const formData = new FormData();
@@ -239,8 +245,9 @@ function PackageModal({
         slug: slug.trim() || undefined,
         shortDescription: shortDescription.trim(),
         longDescription: longDescription.trim() || undefined,
-        price: Number(price),
+        price: numericPrice,
         currencyCode,
+        paymentMode,
         displayOrder: Number(displayOrder),
         featured,
         active,
@@ -310,6 +317,15 @@ function PackageModal({
               </div>
             </div>
             <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="text-xs font-semibold text-zinc-500 mb-1 block">Payment Mode</label>
+                <select className="input-base" value={paymentMode} onChange={e => setPaymentMode(e.target.value as PaymentMode)}>
+                  <option value="NONE">Free / No payment</option>
+                  <option value="PRE_PAYMENT">Pay before booking</option>
+                  <option value="POST_PAYMENT">Pay after consultation</option>
+                </select>
+                <p className="text-[11px] text-zinc-400 mt-1">Paid modes require a package price greater than 0. Free mode requires 0.</p>
+              </div>
               <div>
                 <label className="text-xs font-semibold text-zinc-500 mb-1 block">Display Order</label>
                 <input className="input-base" type="number" value={displayOrder} onChange={e => setDisplayOrder(Number(e.target.value))} />
