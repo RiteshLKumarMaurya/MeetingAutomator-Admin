@@ -6,7 +6,7 @@ import { useEffect, useState, useRef } from 'react';
 import {
   LayoutDashboard, FolderKanban, Package, Layers, Cpu,
   Image, Star, ListChecks, Link2, Globe, Settings, Users, ShieldCheck,
-  Menu, LogOut, ChevronRight, Layers2, ChevronDown, Bell, CalendarDays, Tag, PanelTop,
+  Menu, LogOut, ChevronRight, Layers2, ChevronDown, Bell, CalendarDays, Tag, PanelTop, Mail,
 } from 'lucide-react';
 import { useMe } from '@/hooks/useApi';
 import { useAuthStore } from '@/store/authStore';
@@ -20,6 +20,7 @@ const navItems = [
   { href: '/dashboard', label: 'Overview', icon: LayoutDashboard, exact: true, group: 'Workspace' },
   { href: '/dashboard/bookings', label: 'Consultations', icon: CalendarDays, exact: true, group: 'Workspace' },
   { href: '/dashboard/bookings/settings', label: 'Booking Settings', icon: Settings, exact: true, group: 'Workspace' },
+  { href: '/dashboard/contacts', label: 'Contact Requests', icon: Mail, exact: true, group: 'Workspace' },
   { href: '/dashboard/projects', label: 'Projects', icon: FolderKanban, group: 'Business' },
   { href: '/dashboard/bundles', label: 'Project Bundles', icon: Layers2, group: 'Business' },
   { href: '/dashboard/packages', label: 'Packages', icon: Package, group: 'Business' },

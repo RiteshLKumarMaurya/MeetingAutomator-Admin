@@ -6,7 +6,7 @@
     "dev": "next dev -p 3000",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "check": "tsc --noEmit && next build"
   },
   "dependencies": {
     "@microsoft/clarity": "^1.0.2",
