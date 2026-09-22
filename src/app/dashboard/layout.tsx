@@ -147,7 +147,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       <div className="px-4 py-5 border-b border-zinc-200/80 dark:border-zinc-800/80">
         <Link href="/dashboard" className="flex items-center gap-2">
           <div className="flex h-9 w-9 items-center justify-center overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-black/5 dark:bg-zinc-900 dark:ring-white/10">
-            <img src="/logos/logo-mark.png" alt="Meeting Automator" className="h-8 w-8 object-cover" />
+            <img src="/logos/logo-mark.webp" alt="Meeting Automator" className="h-8 w-8 object-cover" />
           </div>
           <span className="font-display font-bold text-sm text-zinc-900 dark:text-zinc-100">
             Meeting <span className="text-brand-500">Automator</span> Admin
@@ -176,7 +176,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       </nav>
 
       <div className="px-3 py-4 border-t border-zinc-200 dark:border-zinc-800 space-y-1">
-        <Link href="/dashboard" className="sidebar-link">
+        <Link href={process.env.NEXT_PUBLIC_SITE_URL || "https://meetingautomator.com"} target="_blank" rel="noreferrer" className="sidebar-link">
           <Globe className="w-4 h-4" /> View Website
         </Link>
         <button

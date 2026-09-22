@@ -64,7 +64,7 @@ export function AdminLoginClient() {
           <div className="absolute -left-40 -top-40 h-96 w-96 rounded-full bg-brand-600/20 blur-3xl" />
           <div className="absolute -bottom-40 -right-20 h-96 w-96 rounded-full bg-amber-500/10 blur-3xl" />
           <div className="relative flex items-center gap-3">
-            <img src="/logos/logo-mark.png" alt="Meeting Automator" className="h-10 w-10 object-contain" />
+            <img src="/logos/logo-mark.webp" alt="Meeting Automator" className="h-10 w-10 object-contain" />
             <div><p className="font-semibold tracking-tight">Meeting Automator</p><p className="text-xs text-white/45">Independent Admin Control Center</p></div>
           </div>
           <div className="relative max-w-xl">
@@ -80,7 +80,7 @@ export function AdminLoginClient() {
 
         <section className="flex items-center justify-center p-6 sm:p-10">
           <div className="w-full max-w-md">
-            <div className="mb-8 lg:hidden flex items-center gap-3"><img src="/logos/logo-mark.png" alt="Meeting Automator" className="h-9 w-9" /><div><p className="font-semibold">Meeting Automator</p><p className="text-xs text-white/45">Admin Control Center</p></div></div>
+            <div className="mb-8 lg:hidden flex items-center gap-3"><img src="/logos/logo-mark.webp" alt="Meeting Automator" className="h-9 w-9" /><div><p className="font-semibold">Meeting Automator</p><p className="text-xs text-white/45">Admin Control Center</p></div></div>
             <div className="rounded-3xl border border-white/10 bg-white/[.045] p-6 shadow-2xl backdrop-blur-xl sm:p-8">
               <div className="mb-7"><div className="mb-4 flex h-11 w-11 items-center justify-center rounded-2xl bg-brand-500/15 text-brand-300"><ShieldCheck className="h-5 w-5" /></div><p className="text-xs font-semibold uppercase tracking-[.18em] text-brand-300/80">Secure administrator sign-in</p><h2 className="mt-2 text-2xl font-semibold tracking-tight">Open control center</h2><p className="mt-2 text-sm leading-6 text-white/45">Use an administrator account to continue.</p></div>
               <div className="space-y-4"><GoogleSignInButton text="signin_with" onSuccess={handleGoogle} /><div className="flex items-center gap-3 text-[11px] uppercase tracking-[.16em] text-white/25"><span className="h-px flex-1 bg-white/10" />or<span className="h-px flex-1 bg-white/10" /></div></div>

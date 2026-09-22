@@ -2,7 +2,7 @@ import type { Metadata, Viewport } from 'next';
 import { Providers } from '@/components/layout/Providers';
 import './globals.css';
 
-export const viewport: Viewport = { width: 'device-width', initialScale: 1, colorScheme: 'dark light' };
+export const viewport: Viewport = { width: 'device-width', initialScale: 1, colorScheme: 'light' };
 export const metadata: Metadata = {
   title: { default: 'Meeting Automator Admin', template: '%s | Meeting Automator Admin' },
   description: 'Protected administration workspace for Meeting Automator.',

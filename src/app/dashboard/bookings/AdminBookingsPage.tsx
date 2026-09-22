@@ -108,36 +108,16 @@ const STAT_CARDS = [
   { key: 'cancelledBookings', label: 'Cancelled', icon: XCircle, tone: 'from-rose-500 to-red-600' },
 ] as const;
 
-function formatDateTime(value?: string | null) {
+function formatDateTime(value?: string | null, timeZone = 'Asia/Kolkata') {
   if (!value) return '—';
   return new Intl.DateTimeFormat('en-IN', {
+    timeZone,
     day: '2-digit',
     month: 'short',
     year: 'numeric',
     hour: 'numeric',
     minute: '2-digit',
   }).format(new Date(value));
-}
-
-function formatDate(value?: string | null) {
-  if (!value) return '—';
-  return new Intl.DateTimeFormat('en-IN', {
-    weekday: 'short',
-    day: 'numeric',
-    month: 'short',
-    year: 'numeric',
-  }).format(new Date(value));
-}
-
-function toDateTimeLocal(value?: string | null) {
-  if (!value) return '';
-  const d = new Date(value);
-  const pad = (n: number) => String(n).padStart(2, '0');
-  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
-}
-
-function toIso(value: string) {
-  return new Date(value).toISOString();
 }
 
 function initials(name?: string | null) {
@@ -283,6 +263,8 @@ function DetailModal({
   onAction: (action: string) => void;
 }) {
   const { data, isLoading, isError } = useAdminBookingDetail(bookingId);
+  const consultationSettings = useConsultationSettings();
+  const settings = consultationSettings.data;
 
   async function copy(value: string, label: string) {
     try {
@@ -346,11 +328,12 @@ function DetailModal({
                 <Info label="WhatsApp" value={data.whatsappNumber} href={`https://wa.me/${data.whatsappNumber.replace(/\D/g, '')}`} icon={<Phone className="h-4 w-4" />} />
                 <Info label="Company / store" value={data.companyName || '—'} />
                 <Info label="Lead source" value={data.leadSource?.replace(/_/g, ' ') || '—'} />
-                <Info label="Requested" value={formatDateTime(data.requestedAt)} icon={<Clock3 className="h-4 w-4" />} />
-                <Info label="Scheduled" value={formatDateTime(data.scheduledAt)} icon={<CalendarDays className="h-4 w-4" />} />
+                <Info label="Requested" value={formatDateTime(data.requestedAt, settings?.timezone || 'Asia/Kolkata')} icon={<Clock3 className="h-4 w-4" />} />
+                <Info label="Scheduled" value={formatDateTime(data.scheduledAt, settings?.timezone || 'Asia/Kolkata')} icon={<CalendarDays className="h-4 w-4" />} />
                 <Info label="Payment mode" value={data.paymentMode === 'PRE_PAYMENT' ? 'Pay before booking' : data.paymentMode === 'POST_PAYMENT' ? 'Pay after consultation' : 'No payment required'} />
                 <Info label="Payment status" value={data.paymentStatus?.replace(/_/g, ' ') || '—'} />
                 <Info label="Payment amount" value={data.paymentAmount != null ? `${data.paymentCurrency || ''} ${data.paymentAmount}`.trim() : '—'} />
+                <Info label="Business timezone" value={settings?.timezone || 'Asia/Kolkata'} />
                 <Info label="Guest timezone" value={data.guestTimezone || '—'} />
               </div>
 
@@ -442,8 +425,8 @@ function DetailModal({
               )}
 
               <div className="mt-6 grid gap-2 border-t border-zinc-200 pt-5 text-xs text-zinc-500 dark:border-zinc-800 dark:text-zinc-400 sm:grid-cols-2">
-                <p>Created: {formatDateTime(data.createdAt)}</p>
-                <p>Updated: {formatDateTime(data.updatedAt)}</p>
+                <p>Created: {formatDateTime(data.createdAt, settings?.timezone || 'Asia/Kolkata')}</p>
+                <p>Updated: {formatDateTime(data.updatedAt, settings?.timezone || 'Asia/Kolkata')}</p>
               </div>
             </>
           )}
@@ -453,9 +436,14 @@ function DetailModal({
           <div className="flex flex-wrap items-center justify-between gap-2 border-t border-zinc-200 bg-zinc-50 px-5 py-4 dark:border-zinc-800 dark:bg-zinc-950/50 md:px-7">
             <div className="flex flex-wrap gap-2">
               {data.status === 'PENDING' && (
-                <ActionButton onClick={() => onAction('approve')} tone="primary">
-                  <Check className="h-4 w-4" /> Approve
-                </ActionButton>
+                <>
+                  <ActionButton onClick={() => onAction('approve')} tone="primary">
+                    <Check className="h-4 w-4" /> Approve
+                  </ActionButton>
+                  <ActionButton onClick={() => onAction('cancel')} tone="danger">
+                    <XCircle className="h-4 w-4" /> Cancel
+                  </ActionButton>
+                </>
               )}
               {data.status === 'CONFIRMED' && (
                 <>
@@ -548,9 +536,27 @@ function ActionButton({
   );
 }
 
+function dateKeyInTimezone(value: string | Date, timeZone: string) {
+  const parts = new Intl.DateTimeFormat('en-CA', {
+    timeZone,
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  }).formatToParts(new Date(value));
+  const values = Object.fromEntries(parts.map((part) => [part.type, part.value]));
+  return `${values.year}-${values.month}-${values.day}`;
+}
+
+function addDaysToDateKey(value: string, days: number) {
+  const date = new Date(`${value}T12:00:00Z`);
+  date.setUTCDate(date.getUTCDate() + days);
+  return date.toISOString().slice(0, 10);
+}
+
 function buildCurrentBookingSlot(
   value?: string | null,
-  durationMinutes = 30
+  durationMinutes = 30,
+  timeZone = 'Asia/Kolkata'
 ): AvailableSlotResponse | null {
   if (!value) return null;
 
@@ -559,6 +565,7 @@ function buildCurrentBookingSlot(
 
   const end = new Date(start.getTime() + durationMinutes * 60 * 1000);
   const timeFormatter = new Intl.DateTimeFormat('en-US', {
+    timeZone,
     hour: 'numeric',
     minute: '2-digit',
   });
@@ -581,52 +588,42 @@ function ActionModal({
   booking: BookingDetailsResponse;
   onClose: () => void;
 }) {
-  const bookingScheduledDate = booking.scheduledAt
-    ? new Date(booking.scheduledAt).toLocaleDateString('en-CA')
-    : '';
-
-  const [selectedDate, setSelectedDate] = useState(
-  bookingScheduledDate || new Date().toLocaleDateString('en-CA')
-);
-
 // ============================================================
 // CONSULTATION SETTINGS
 // ============================================================
 
 const consultationSettings = useConsultationSettings();
 const settings = consultationSettings.data;
+const businessTimezone = settings?.timezone || 'Asia/Kolkata';
+
+const bookingScheduledDate = booking.scheduledAt
+    ? dateKeyInTimezone(booking.scheduledAt, businessTimezone)
+    : '';
+
+  const [selectedDate, setSelectedDate] = useState(
+    bookingScheduledDate || dateKeyInTimezone(new Date(), businessTimezone)
+  );
+
+  useEffect(() => {
+    setSelectedDate(
+      booking.scheduledAt
+        ? dateKeyInTimezone(booking.scheduledAt, businessTimezone)
+        : dateKeyInTimezone(new Date(), businessTimezone)
+    );
+  }, [booking.scheduledAt, businessTimezone]);
 
 // ============================================================
 // BOOKING DATE LIMITS
 // ============================================================
 
-const todayForBooking = useMemo(() => {
-  const timezone = settings?.timezone || 'Asia/Kolkata';
-
-  const parts = new Intl.DateTimeFormat('en-CA', {
-    timeZone: timezone,
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-  }).formatToParts(new Date());
-
-  const values = Object.fromEntries(
-    parts.map((part) => [part.type, part.value])
-  );
-
-  return `${values.year}-${values.month}-${values.day}`;
-}, [settings?.timezone]);
+const todayForBooking = useMemo(
+  () => dateKeyInTimezone(new Date(), businessTimezone),
+  [businessTimezone]
+);
 
 const maxBookingDate = useMemo(() => {
   if (!settings) return undefined;
-
-  const d = new Date(`${todayForBooking}T00:00:00`);
-
-  d.setDate(
-    d.getDate() + settings.maximumAdvanceDays
-  );
-
-  return d.toLocaleDateString('en-CA');
+  return addDaysToDateKey(todayForBooking, settings.maximumAdvanceDays);
 }, [settings, todayForBooking]);
 
 // ============================================================
@@ -656,9 +653,10 @@ const [releaseSlot, setReleaseSlot] =
     }
     return buildCurrentBookingSlot(
       booking.scheduledAt,
-      settings?.slotDurationMinutes ?? 30
+      settings?.slotDurationMinutes ?? 30,
+      businessTimezone
     );
-  }, [booking.scheduledAt, settings?.slotDurationMinutes]);
+  }, [booking.scheduledAt, settings?.slotDurationMinutes, businessTimezone]);
 
   const availability = useAvailableConsultationSlots(
     type === 'approve' || type === 'reschedule' ? selectedDate : ''
@@ -1085,6 +1083,8 @@ export default function AdminBookingsPage() {
   }, [selectedBookingId, closeBooking]);
 
   const dashboard = useAdminBookingDashboard();
+  const consultationSettings = useConsultationSettings();
+  const businessTimezone = consultationSettings.data?.timezone || 'Asia/Kolkata';
   const list = useAdminBookings(filters, page, size);
 
   const selectedDetail = useAdminBookingDetail(selectedBookingId);
@@ -1346,7 +1346,7 @@ export default function AdminBookingsPage() {
                       </div>
                     </td>
                     <td className="px-5 py-4">
-                      <p className="text-sm font-semibold">{formatDateTime(booking.scheduledAt)}</p>
+                      <p className="text-sm font-semibold">{formatDateTime(booking.scheduledAt, businessTimezone)}</p>
                       <p className="mt-0.5 text-[11px] text-zinc-400">{booking.bookingId}</p>
                     </td>
                     <td className="px-5 py-4"><StatusBadge status={booking.status} /></td>
@@ -1407,7 +1407,7 @@ export default function AdminBookingsPage() {
                     <div className="mt-3 flex items-center justify-between gap-3">
                       <span className="inline-flex items-center gap-1.5 text-xs font-semibold">
                         <CalendarDays className="h-3.5 w-3.5 text-brand-500" />
-                        {formatDateTime(booking.scheduledAt)}
+                        {formatDateTime(booking.scheduledAt, businessTimezone)}
                       </span>
                       <ArrowRight className="h-4 w-4 text-zinc-400" />
                     </div>

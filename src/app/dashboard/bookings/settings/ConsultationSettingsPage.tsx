@@ -65,6 +65,22 @@ function fromSettings(settings: ConsultationSettingsResponse): UpdateConsultatio
   };
 }
 
+function currentBusinessTime(timeZone: string) {
+  try {
+    return new Intl.DateTimeFormat('en-CA', {
+      timeZone,
+      weekday: 'short',
+      month: 'short',
+      day: 'numeric',
+      hour: 'numeric',
+      minute: '2-digit',
+      timeZoneName: 'short',
+    }).format(new Date());
+  } catch {
+    return 'Invalid timezone';
+  }
+}
+
 function humanMinutes(minutes: number) {
   if (minutes < 60) return `${minutes} min`;
   const hours = Math.floor(minutes / 60);
@@ -313,7 +329,20 @@ export default function ConsultationSettingsPage() {
             <Field label="Business timezone" hint="Use an IANA timezone such as Asia/Kolkata or America/New_York.">
               <div className="relative">
                 <Globe2 className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted" />
-                <input value={form.timezone} onChange={(e) => update('timezone', e.target.value)} className="input w-full pl-9" placeholder="Asia/Kolkata" />
+                <input list="meeting-automator-timezones" value={form.timezone} onChange={(e) => update('timezone', e.target.value)} className="input w-full pl-9" placeholder="America/Toronto" autoComplete="off" />
+                <datalist id="meeting-automator-timezones">
+                  <option value="America/Toronto" />
+                  <option value="America/Vancouver" />
+                  <option value="America/Edmonton" />
+                  <option value="America/Winnipeg" />
+                  <option value="America/Halifax" />
+                  <option value="America/St_Johns" />
+                  <option value="America/Regina" />
+                  <option value="America/New_York" />
+                  <option value="Asia/Kolkata" />
+                  <option value="Europe/London" />
+                  <option value="UTC" />
+                </datalist>
               </div>
             </Field>
           </div>
@@ -349,6 +378,7 @@ export default function ConsultationSettingsPage() {
               <PreviewRow icon={<Users className="h-4 w-4" />} label="Capacity" value={`${form.slotCapacity} per slot`} />
               <PreviewRow icon={<ShieldCheck className="h-4 w-4" />} label="Guest changes" value={`${form.maxReschedulesPer24Hours} reschedules / 24h`} />
               <PreviewRow icon={<Globe2 className="h-4 w-4" />} label="Timezone" value={form.timezone} />
+              <PreviewRow icon={<Clock3 className="h-4 w-4" />} label="Current business time" value={currentBusinessTime(form.timezone)} />
             </div>
           </div>
 
