@@ -13,7 +13,7 @@ The administration routes and data operations are preserved. The redesign focuse
 
 ## Production API/media defaults
 
-- API: `http://localhost:8057`
+- API: `https://api.meetingautomator.com`
 - Media: `https://media.meetingautomator.com`
 
 Media helpers prefer the backend's new single-object R2 response (`url` / `objectKey`) and fall back to legacy aliases when present.
