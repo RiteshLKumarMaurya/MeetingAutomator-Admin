@@ -42,7 +42,7 @@ function BundleModal({
   // Thumbnail
   const [thumbFile, setThumbFile] = useState<File | null>(null);
   const [thumbPreview, setThumbPreview] = useState<string | null>(
-    bundle?.thumbImage?.optimizedKey || null
+    bundle?.thumbImage ? getMediaUrl(bundle.thumbImage) : null
   );
   const [removeThumb, setRemoveThumb] = useState(false);
 

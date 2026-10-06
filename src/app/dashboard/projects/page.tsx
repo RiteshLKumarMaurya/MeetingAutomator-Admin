@@ -53,7 +53,7 @@ function ProjectModal({
   // Thumbnail
   const [thumbFile, setThumbFile] = useState<File | null>(null);
   const [thumbPreview, setThumbPreview] = useState<string | null>(
-    project?.thumbImage?.optimizedKey || null
+    project?.thumbImage ? getMediaUrl(project.thumbImage) : null
   );
   const [removeThumb, setRemoveThumb] = useState(false);
 
@@ -386,7 +386,7 @@ function ProjectModal({
                 {/* Existing banners – key by id, fallback to index */}
                 {existingBanners.map((b, idx) => (
                   <div key={b.id ?? `existing-${idx}`} className="relative w-16 h-16 rounded-lg overflow-hidden border">
-                    <img src={b.media?.optimizedKey || ''} alt="Banner" className="w-full h-full object-cover" />
+                    <img src={b.media ? getMediaUrl(b.media) : ''} alt="Banner" className="w-full h-full object-cover" />
                     <button onClick={() => removeExistingBanner(b.id)} className="absolute -top-1 -right-1 p-0.5 rounded-full bg-red-500 text-white">
                       <X className="w-3 h-3" />
                     </button>

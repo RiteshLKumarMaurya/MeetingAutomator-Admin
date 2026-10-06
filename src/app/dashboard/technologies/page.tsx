@@ -35,7 +35,7 @@ function TechnologyModal({
   const [active, setActive] = useState(technology?.active ?? true);
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(
-    technology?.iconImage?.optimizedKey || null
+    technology?.iconImage ? getMediaUrl(technology.iconImage) : null
   );
   const [removeIcon, setRemoveIcon] = useState(false);
 

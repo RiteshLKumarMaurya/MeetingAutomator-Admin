@@ -910,3 +910,194 @@ img {
 .admin-card-hover:hover { transform:translateY(-2px); box-shadow:0 18px 45px rgba(15,23,42,.08); border-color:rgba(15,118,110,.18); }
 .dark .admin-card-hover:hover { box-shadow:0 22px 55px rgba(0,0,0,.3); }
 .admin-status-dot { width:7px; height:7px; border-radius:999px; background:#22c55e; box-shadow:0 0 0 4px rgba(34,197,94,.1); }
+
+/* ============================================================
+   MEETING AUTOMATOR ADMIN — FINAL CONTROL CENTER DESIGN
+   Quiet, dense, operational, and consistent with the public site.
+   ============================================================ */
+:root {
+  --admin-brand: #1769d1;
+  --admin-brand-strong: #125dbd;
+  --admin-brand-soft: #eaf3ff;
+  --admin-ink: #10233f;
+  --admin-muted: #64748b;
+  --admin-line: #dce5ef;
+  --admin-surface: #f5f8fc;
+  --admin-card: rgba(255,255,255,.94);
+}
+.dark {
+  --admin-brand: #67a7f7;
+  --admin-brand-strong: #4f96ea;
+  --admin-brand-soft: rgba(103,167,247,.12);
+  --admin-ink: #eef5fc;
+  --admin-muted: #9aaabe;
+  --admin-line: #26384d;
+  --admin-surface: #071321;
+  --admin-card: rgba(12,28,47,.88);
+}
+.admin-shell {
+  background:
+    radial-gradient(circle at 92% 0%, rgba(23,105,209,.065), transparent 26rem),
+    var(--admin-surface);
+}
+.dark .admin-shell {
+  background:
+    radial-gradient(circle at 92% 0%, rgba(103,167,247,.075), transparent 26rem),
+    #071321;
+}
+.admin-sidebar {
+  width: 268px !important;
+  background: rgba(255,255,255,.9);
+  border-right: 1px solid var(--admin-line);
+  box-shadow: 14px 0 45px rgba(16,35,63,.035);
+  backdrop-filter: blur(20px);
+}
+.dark .admin-sidebar { background: rgba(6,18,31,.94); border-color: var(--admin-line); box-shadow: 16px 0 55px rgba(0,0,0,.2); }
+.admin-sidebar > div > div:first-child { padding: 18px 16px; border-bottom: 1px solid var(--admin-line) !important; }
+.admin-sidebar .sidebar-link {
+  min-height: 40px;
+  margin: 2px 7px;
+  padding: 9px 11px;
+  border-radius: 11px;
+  color: #66758a;
+  font-size: 12px;
+  font-weight: 650;
+  border: 1px solid transparent;
+  transition: background .18s ease, color .18s ease, transform .18s ease, border-color .18s ease;
+}
+.dark .admin-sidebar .sidebar-link { color: #9aaabe; }
+.admin-sidebar .sidebar-link:hover { background: #f0f6fc; color: var(--admin-brand); text-decoration:none; }
+.dark .admin-sidebar .sidebar-link:hover { background: rgba(103,167,247,.08); color: var(--admin-brand); }
+.admin-sidebar .sidebar-link.active {
+  color:#fff;
+  background: linear-gradient(135deg,var(--admin-brand),#3b8ee8);
+  box-shadow: 0 9px 25px rgba(23,105,209,.18);
+}
+.admin-sidebar .sidebar-link.active::before { display:none; }
+.admin-topbar {
+  height: 70px !important;
+  background: rgba(255,255,255,.84);
+  border-bottom: 1px solid var(--admin-line);
+  box-shadow: 0 8px 28px rgba(16,35,63,.035);
+  backdrop-filter: blur(18px);
+}
+.dark .admin-topbar { background: rgba(7,19,33,.86); border-color:var(--admin-line); box-shadow: 0 10px 35px rgba(0,0,0,.16); }
+.admin-page-title { color: var(--admin-ink) !important; font-size: 17px; font-weight: 800; }
+.admin-status-dot { background:#2fa968; box-shadow:0 0 0 4px rgba(47,169,104,.1); }
+.admin-main { background:transparent; }
+.admin-main > div { max-width: 1220px !important; }
+.admin-main .rounded-2xl.border.border-border.bg-card-bg,
+.admin-main .rounded-2xl.border.border-zinc-200,
+.admin-main .rounded-2xl.border.border-border { border-radius: 18px; box-shadow: 0 1px 2px rgba(16,35,63,.025), 0 14px 40px rgba(16,35,63,.045); }
+.dark .admin-main .rounded-2xl.border.border-border.bg-card-bg,
+.dark .admin-main .rounded-2xl.border.border-zinc-800 { box-shadow: 0 1px 2px rgba(0,0,0,.24), 0 20px 50px rgba(0,0,0,.18); }
+.admin-card, .card-base, .card-hover { border-color: var(--admin-line); background: var(--admin-card); }
+.admin-eyebrow { color: var(--admin-brand); }
+
+/* Buttons and controls */
+.btn-primary {
+  background: linear-gradient(135deg,var(--admin-brand),#3186dc);
+  box-shadow: 0 10px 24px rgba(23,105,209,.18);
+}
+.btn-primary:hover { background: linear-gradient(135deg,var(--admin-brand-strong),#287ad0); box-shadow: 0 14px 30px rgba(23,105,209,.22); }
+.btn-secondary { border-color: var(--admin-line); background: rgba(255,255,255,.8); color: var(--admin-ink); }
+.dark .btn-secondary { background: rgba(12,28,47,.7); color: var(--admin-ink); }
+.btn-secondary:hover { border-color: rgba(23,105,209,.35); color: var(--admin-brand-strong); background: var(--admin-brand-soft); }
+.input, .input-base { border-color: var(--admin-line); background: rgba(248,251,255,.92); }
+.dark .input, .dark .input-base { background: rgba(5,18,31,.82); }
+.input:focus, .input-base:focus { border-color: var(--admin-brand); box-shadow: 0 0 0 3px rgba(23,105,209,.10); }
+
+/* Tables/list-heavy screens */
+.admin-main table thead th { background: #f8fbff; color:#6b7b90; font-size: 10px; text-transform:uppercase; letter-spacing:.08em; }
+.dark .admin-main table thead th { background:#0b1b2d; color:#92a4b8; }
+.admin-main table tbody tr { transition: background .16s ease; }
+.admin-main table tbody tr:hover { background:#f7fbff; }
+.dark .admin-main table tbody tr:hover { background:rgba(103,167,247,.035); }
+.admin-main input, .admin-main select, .admin-main textarea { border-radius: 11px; }
+
+/* Dashboard hero */
+.admin-main .font-display { letter-spacing:-.035em; }
+.admin-main .bg-brand-50 { background: var(--admin-brand-soft) !important; }
+.admin-main .text-brand-500, .admin-main .text-brand-600 { color: var(--admin-brand-strong) !important; }
+.dark .admin-main .text-brand-400 { color: var(--admin-brand) !important; }
+
+@media (max-width: 1023px) {
+  .admin-topbar { height: 64px !important; }
+  .admin-main { padding: 18px 16px 28px !important; }
+}
+
+/* Final login surface */
+.admin-login {
+  background:
+    radial-gradient(circle at 12% 18%, rgba(23,105,209,.18), transparent 28rem),
+    radial-gradient(circle at 86% 82%, rgba(74,144,224,.10), transparent 24rem),
+    #071321 !important;
+}
+.admin-login-grid { max-width: 1280px !important; }
+.admin-login-story { border-color: rgba(255,255,255,.09) !important; }
+.admin-login-story .bg-brand-600 { background:#1769d1 !important; }
+.admin-login-form { position: relative; }
+.admin-login-form > div { max-width: 430px; }
+.admin-login-form .rounded-3xl {
+  border:1px solid rgba(255,255,255,.10) !important;
+  background: rgba(10,26,44,.82) !important;
+  box-shadow: 0 30px 100px rgba(0,0,0,.28) !important;
+}
+.admin-login-form input {
+  min-height: 50px;
+  border-color: rgba(255,255,255,.11) !important;
+  background: rgba(2,10,19,.34) !important;
+  border-radius: 12px !important;
+}
+.admin-login-form input:focus {
+  border-color: rgba(103,167,247,.62) !important;
+  box-shadow: 0 0 0 3px rgba(103,167,247,.11) !important;
+}
+.admin-login-form button:not([aria-label]) { border-radius: 12px; }
+@media (max-width: 767px) {
+  .admin-login-form { padding: 24px 16px !important; }
+  .admin-login-form .rounded-3xl { border-radius: 20px !important; }
+}
+
+/* Final brand scale for Tailwind-generated fixed colors used by legacy screens. */
+.admin-shell .bg-brand-500 { background-color: var(--admin-brand) !important; }
+.admin-shell .bg-brand-600 { background-color: var(--admin-brand-strong) !important; }
+.admin-shell .hover\:bg-brand-600:hover { background-color: var(--admin-brand-strong) !important; }
+.admin-shell .text-brand-500, .admin-shell .text-brand-600, .admin-shell .text-brand-700 { color: var(--admin-brand-strong) !important; }
+.dark .admin-shell .text-brand-400 { color: var(--admin-brand) !important; }
+.admin-shell .border-brand-500 { border-color: var(--admin-brand) !important; }
+
+
+/* ===== Meeting Automator Admin 2026 premium interaction layer ===== */
+.admin-shell { position:relative; isolation:isolate; background:linear-gradient(180deg,#f7faff 0%,#f2f7fc 100%); }
+.admin-shell::before { content:""; position:fixed; pointer-events:none; inset:-18% -8% auto; height:520px; z-index:-1; background:radial-gradient(circle at 14% 20%,rgba(37,99,235,.10),transparent 35%),radial-gradient(circle at 86% 16%,rgba(124,58,237,.08),transparent 30%); animation:adminAmbient 11s ease-in-out infinite alternate; }
+@keyframes adminAmbient { from { transform:translate3d(-1%,0,0) scale(1); } to { transform:translate3d(1%,2%,0) scale(1.035); } }
+.admin-sidebar { backdrop-filter:blur(24px) saturate(150%); }
+.admin-sidebar .sidebar-link { position:relative; overflow:hidden; }
+.admin-sidebar .sidebar-link::after { content:""; position:absolute; inset:0 auto 0 0; width:2px; background:linear-gradient(180deg,#5ca6ff,#7c5cff); transform:scaleY(0); transition:transform .24s ease; }
+.admin-sidebar .sidebar-link:hover::after, .admin-sidebar .sidebar-link.active::after { transform:scaleY(1); }
+.admin-topbar { position:relative; }
+.admin-topbar::after { content:""; position:absolute; inset:auto 18px 0; height:1px; background:linear-gradient(90deg,transparent,rgba(37,99,235,.22),transparent); }
+.admin-main .rounded-2xl, .admin-main .rounded-3xl { transition:transform .28s cubic-bezier(.16,1,.3,1), box-shadow .28s ease, border-color .28s ease; }
+.admin-main section.rounded-2xl:hover, .admin-main section.rounded-3xl:hover { transform:translateY(-2px); box-shadow:0 24px 58px rgba(16,35,63,.09); }
+.admin-main .grid > a.rounded-2xl, .admin-main .grid > a.rounded-3xl { transition:transform .28s cubic-bezier(.16,1,.3,1), box-shadow .28s ease, border-color .28s ease; }
+.admin-main .grid > a.rounded-2xl:hover, .admin-main .grid > a.rounded-3xl:hover { transform:translateY(-5px); box-shadow:0 20px 48px rgba(16,35,63,.10); border-color:rgba(23,105,209,.24); }
+.admin-main .btn-primary { position:relative; overflow:hidden; }
+.admin-main .btn-primary::after { content:""; position:absolute; top:0; left:-120%; width:70%; height:100%; background:linear-gradient(90deg,transparent,rgba(255,255,255,.22),transparent); transform:skewX(-18deg); transition:left .65s ease; }
+.admin-main .btn-primary:hover::after { left:135%; }
+.admin-main table tbody tr { transition:transform .2s ease, background .2s ease, box-shadow .2s ease; }
+.admin-main table tbody tr:hover { transform:translateX(2px); box-shadow:inset 3px 0 0 #3b82f6; }
+.admin-login { overflow:hidden; }
+.admin-login::before { content:""; position:absolute; width:480px; height:480px; left:-160px; top:-140px; border-radius:50%; background:radial-gradient(circle,rgba(37,99,235,.24),transparent 68%); animation:loginOrb 9s ease-in-out infinite alternate; }
+.admin-login::after { content:""; position:absolute; width:420px; height:420px; right:-140px; bottom:-160px; border-radius:50%; background:radial-gradient(circle,rgba(124,92,255,.16),transparent 68%); animation:loginOrb 12s ease-in-out infinite alternate-reverse; }
+@keyframes loginOrb { from { transform:translate3d(0,0,0) scale(1); } to { transform:translate3d(20px,18px,0) scale(1.08); } }
+.admin-login-story { position:relative; }
+.admin-login-story::before { content:""; position:absolute; inset:0; background-image:linear-gradient(135deg,rgba(5,18,32,.85),rgba(5,18,32,.48)),url("https://images.pexels.com/photos/29249983/pexels-photo-29249983.jpeg?auto=compress&cs=tinysrgb&w=1800"); background-size:cover; background-position:center; opacity:.34; transform:scale(1.04); }
+.admin-login-story > * { position:relative; z-index:1; }
+.admin-login-story .rounded-2xl, .admin-login-story .rounded-3xl { transition:transform .24s ease, border-color .24s ease, background .24s ease; }
+.admin-login-story .rounded-2xl:hover, .admin-login-story .rounded-3xl:hover { transform:translateY(-3px); border-color:rgba(255,255,255,.18); background:rgba(255,255,255,.06); }
+.admin-login-form .rounded-3xl { position:relative; overflow:hidden; }
+.admin-login-form .rounded-3xl::after { content:""; position:absolute; inset:0; pointer-events:none; background:linear-gradient(120deg,transparent 20%,rgba(255,255,255,.05) 48%,transparent 68%); transform:translateX(-120%); animation:loginSheen 7s ease-in-out infinite; }
+@keyframes loginSheen { 0%,65%,100% { transform:translateX(-120%); } 76% { transform:translateX(120%); } }
+
+/* Booking settings — make timezone selection easier without losing custom IANA support */

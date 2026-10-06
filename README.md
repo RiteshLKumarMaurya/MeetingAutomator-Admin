@@ -26,9 +26,9 @@ This is the standalone administrator frontend for Meeting Automator. It is inten
 Create `.env.local`:
 
 ```env
-NEXT_PUBLIC_API_URL=https://YOUR-MEETING-AUTOMATOR-API
+NEXT_PUBLIC_API_URL=http://localhost:8057
 NEXT_PUBLIC_GOOGLE_CLIENT_ID=YOUR_GOOGLE_WEB_CLIENT_ID
-NEXT_PUBLIC_CDN_URL=https://YOUR-CDN
+NEXT_PUBLIC_CDN_URL=https://media.meetingautomator.com
 ```
 
 The browser never receives backend credentials. Authentication is JWT based and administrator access is enforced by the backend `ROLE_ADMIN` authority.

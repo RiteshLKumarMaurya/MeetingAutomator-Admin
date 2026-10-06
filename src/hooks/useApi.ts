@@ -15,7 +15,7 @@ import { isTransientError } from '@/lib/apiClient';
 
 import axios from 'axios';
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL;
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8057';
 
 
 // ─── Query Keys ──────────────────────────────────────────────

@@ -30,9 +30,10 @@ export default function AdminSettingsPage() {
       setWaitFrom(tech.waitFrom ? tech.waitFrom.slice(0, 16) : '');
       setWaitUntil(tech.waitUntil ? tech.waitUntil.slice(0, 16) : '');
       setExistingImage(tech.image || null);
-      if (tech.image?.optimizedKey) {
-        setImagePreview(tech.image.optimizedKey);
-      }
+      const previewUrl = tech.image
+        ? getMediaUrl(tech.image)
+        : null;
+      setImagePreview(previewUrl === '/logos/logo-mark.png' ? null : previewUrl);
     }
   }, [settings]);
 
@@ -46,7 +47,9 @@ export default function AdminSettingsPage() {
 
   const handleRemoveNewImage = () => {
     setImageFile(null);
-    setImagePreview(existingImage?.optimizedKey || null);
+    setImagePreview(
+      existingImage ? getMediaUrl(existingImage) : null
+    );
   };
 
   const handleSaveTechnicalIssue = async () => {

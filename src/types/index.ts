@@ -23,11 +23,10 @@ export interface PageResponse<T> {
 // ============================================================
 export interface MediaResponse {
   publicId: string;
-  originalKey: string;
-  optimizedKey: string;
-  thumbKey: string;
-  width: number;
-  height: number;
+  objectKey?: string | null;
+  url?: string | null;
+  width?: number | null;
+  height?: number | null;
 }
 
 // ============================================================

@@ -51,7 +51,7 @@ function PackageModal({
 
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(
-    pkg?.iconImage?.optimizedKey || null
+    pkg?.iconImage ? getMediaUrl(pkg.iconImage) : null
   );
   const [removeImage, setRemoveImage] = useState(false);
 

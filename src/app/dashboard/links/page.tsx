@@ -41,7 +41,7 @@ function LinkModal({ link, onClose }: { link?: LinkResponse | null; onClose: () 
   const [description, setDescription] = useState(link?.description ?? '');
   const [linkType, setLinkType] = useState<LinkType>(link?.linkType ?? 'OTHER');
   const [iconImageFile, setIconImageFile] = useState<File | null>(null);
-  const [imagePreview, setImagePreview] = useState<string | null>(link?.iconImage?.optimizedKey || null);
+  const [imagePreview, setImagePreview] = useState<string | null>(link?.iconImage ? getMediaUrl(link.iconImage) : null);
   const [removeIcon, setRemoveIcon] = useState(false);  // flag to delete existing icon
   const [saving, setSaving] = useState(false);
 

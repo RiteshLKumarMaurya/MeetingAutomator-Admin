@@ -41,7 +41,7 @@ function ServiceModal({
 
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(
-    service?.iconImage?.optimizedKey || null
+    service?.iconImage ? getMediaUrl(service.iconImage) : null
   );
   const [removeImage, setRemoveImage] = useState(false);
 

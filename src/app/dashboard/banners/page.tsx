@@ -122,7 +122,7 @@ function BannerFormModal({
   // ─── State ──────────────────────────────────────────────────
   const [image, setImage] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(
-    initialData?.bannerImage?.optimizedKey || null
+    initialData?.bannerImage ? getMediaUrl(initialData.bannerImage) : null
   );
   const [form, setForm] = useState({
     type: (initialData?.type as BannerType) || 'URL',
@@ -147,7 +147,7 @@ function BannerFormModal({
 
   useEffect(() => {
     if (isOpen) {
-      setPreview(initialData?.bannerImage?.optimizedKey || null);
+      setPreview(initialData?.bannerImage ? getMediaUrl(initialData.bannerImage) : null);
       setImage(null);
       setForm({
         type: (initialData?.type as BannerType) || 'URL',

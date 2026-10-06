@@ -29,7 +29,7 @@ function FeatureModal({
   const [description, setDescription] = useState(feature?.description ?? '');
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(
-    feature?.iconImage?.optimizedKey || null
+    feature?.iconImage ? getMediaUrl(feature.iconImage) : null
   );
   const [removeIcon, setRemoveIcon] = useState(false);
   const [saving, setSaving] = useState(false);

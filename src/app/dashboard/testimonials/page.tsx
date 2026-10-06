@@ -49,7 +49,7 @@ function TestimonialModal({
   // Thumbnail
   const [thumbFile, setThumbFile] = useState<File | null>(null);
   const [thumbPreview, setThumbPreview] = useState<string | null>(
-    testimonial?.thumbImage?.optimizedKey || null
+    testimonial?.thumbImage ? getMediaUrl(testimonial.thumbImage) : null
   );
   const [removeThumb, setRemoveThumb] = useState(false);
 

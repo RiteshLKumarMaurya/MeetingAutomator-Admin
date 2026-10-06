@@ -58,9 +58,9 @@ export function AdminLoginClient() {
   };
 
   return (
-    <main className="min-h-screen bg-zinc-950 text-white selection:bg-brand-500/30">
-      <div className="mx-auto grid min-h-screen max-w-7xl lg:grid-cols-[1.05fr_.95fr]">
-        <section className="relative hidden overflow-hidden border-r border-white/10 p-12 lg:flex lg:flex-col lg:justify-between xl:p-16">
+    <main className="admin-login min-h-screen bg-zinc-950 text-white selection:bg-brand-500/30">
+      <div className="admin-login-grid mx-auto grid min-h-screen max-w-7xl lg:grid-cols-[1.05fr_.95fr]">
+        <section className="admin-login-story relative hidden overflow-hidden border-r border-white/10 p-12 lg:flex lg:flex-col lg:justify-between xl:p-16">
           <div className="absolute -left-40 -top-40 h-96 w-96 rounded-full bg-brand-600/20 blur-3xl" />
           <div className="absolute -bottom-40 -right-20 h-96 w-96 rounded-full bg-amber-500/10 blur-3xl" />
           <div className="relative flex items-center gap-3">
@@ -78,7 +78,7 @@ export function AdminLoginClient() {
           <p className="relative text-xs text-white/30">Administrator access is enforced by the backend ROLE_ADMIN authority.</p>
         </section>
 
-        <section className="flex items-center justify-center p-6 sm:p-10">
+        <section className="admin-login-form flex items-center justify-center p-6 sm:p-10">
           <div className="w-full max-w-md">
             <div className="mb-8 lg:hidden flex items-center gap-3"><img src="/logos/logo-mark.webp" alt="Meeting Automator" className="h-9 w-9" /><div><p className="font-semibold">Meeting Automator</p><p className="text-xs text-white/45">Admin Control Center</p></div></div>
             <div className="rounded-3xl border border-white/10 bg-white/[.045] p-6 shadow-2xl backdrop-blur-xl sm:p-8">
