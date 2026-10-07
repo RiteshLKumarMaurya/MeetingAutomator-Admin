@@ -25,7 +25,7 @@ export default function NotFound() {
           <Link href="/" className="btn-primary">
             Go Home
           </Link>
-          <Link href="https://meetingautomator.com/contact" target="_blank" rel="noreferrer" className="btn-secondary">
+          <Link href="/contact" className="btn-secondary">
             Contact Us
           </Link>
         </div>

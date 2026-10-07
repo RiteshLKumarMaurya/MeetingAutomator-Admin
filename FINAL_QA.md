@@ -8,7 +8,7 @@
 - Added logout confirmation before the session is cleared.
 - Removed GrocerFlow-branded root logos and admin-assets.
 - Admin UI uses Meeting Automator logo assets and lucide-react UI icons.
-- Media default is `https://media.meetingautomator.com`; production can override with `NEXT_PUBLIC_CDN_URL`.
+- Media default is `https://media.meetingautomator.com`; production can override with `NEXT_PUBLIC_MEDIA_BASE_URL`.
 - Kept the standalone admin architecture and existing authentication/security flow.
 - The consultation graph uses the `scheduledAt` field exposed by the existing admin booking summary endpoint, so no backend change is required.
 

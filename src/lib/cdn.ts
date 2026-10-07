@@ -1,5 +1,5 @@
-const CDN_BASE =
-  process.env.NEXT_PUBLIC_CDN_URL ?? 'https://media.meetingautomator.com';
+const MEDIA_BASE =
+  process.env.NEXT_PUBLIC_MEDIA_BASE_URL ?? 'https://media.meetingautomator.com';
 
 export interface MediaResponse {
   publicId: string;
@@ -9,13 +9,13 @@ export interface MediaResponse {
   height?: number | null;
 }
 
-const PLACEHOLDER = '/logos/logo-mark.png';
+const PLACEHOLDER = '/images/placeholder.webp';
 
 export function getCdnUrl(key?: string | null): string {
   if (!key) return PLACEHOLDER;
   if (/^https?:\/\//i.test(key)) return key;
   const normalizedKey = key.replace(/^\/+/, '');
-  return `${CDN_BASE.replace(/\/$/, '')}/${normalizedKey}`;
+  return `${MEDIA_BASE.replace(/\/$/, '')}/${normalizedKey}`;
 }
 
 export function getMediaUrl(media: Partial<MediaResponse> | null | undefined): string {

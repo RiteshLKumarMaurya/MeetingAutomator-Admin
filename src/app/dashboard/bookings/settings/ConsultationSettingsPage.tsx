@@ -44,26 +44,6 @@ const DAY_LABELS: Record<ConsultationSettingsResponse['workingDays'][number], st
   SUNDAY: 'Sunday',
 };
 
-const COMMON_BUSINESS_TIMEZONES = [
-  'America/Toronto',
-  'America/Vancouver',
-  'America/Edmonton',
-  'America/Winnipeg',
-  'America/Halifax',
-  'America/St_Johns',
-  'America/Regina',
-  'America/New_York',
-  'America/Chicago',
-  'America/Denver',
-  'America/Los_Angeles',
-  'Europe/London',
-  'Asia/Kolkata',
-  'Asia/Dubai',
-  'Asia/Singapore',
-  'Australia/Sydney',
-  'UTC',
-];
-
 function toTimeInput(value?: string) {
   if (!value) return '09:00';
   return value.slice(0, 5);
@@ -346,31 +326,23 @@ export default function ConsultationSettingsPage() {
           </div>
 
           <div className="mt-7">
-            <Field label="Business timezone" hint="Choose a common business timezone or select Custom IANA timezone below.">
-              <div className="space-y-2">
-                <div className="relative">
-                  <Globe2 className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted" />
-                  <select
-                    value={COMMON_BUSINESS_TIMEZONES.includes(form.timezone) ? form.timezone : '__custom__'}
-                    onChange={(e) => {
-                      if (e.target.value !== '__custom__') update('timezone', e.target.value);
-                    }}
-                    className="input w-full pl-9"
-                  >
-                    {COMMON_BUSINESS_TIMEZONES.map((zone) => <option key={zone} value={zone}>{zone.replace(/_/g, ' ')}</option>)}
-                    <option value="__custom__">Custom IANA timezone…</option>
-                  </select>
-                </div>
-                {!COMMON_BUSINESS_TIMEZONES.includes(form.timezone) && (
-                  <input
-                    value={form.timezone}
-                    onChange={(e) => update('timezone', e.target.value)}
-                    className="input w-full"
-                    placeholder="America/Toronto"
-                    autoComplete="off"
-                    aria-label="Custom IANA timezone"
-                  />
-                )}
+            <Field label="Business timezone" hint="Use an IANA timezone such as Asia/Kolkata or America/New_York.">
+              <div className="relative">
+                <Globe2 className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted" />
+                <input list="meeting-automator-timezones" value={form.timezone} onChange={(e) => update('timezone', e.target.value)} className="input w-full pl-9" placeholder="America/Toronto" autoComplete="off" />
+                <datalist id="meeting-automator-timezones">
+                  <option value="America/Toronto" />
+                  <option value="America/Vancouver" />
+                  <option value="America/Edmonton" />
+                  <option value="America/Winnipeg" />
+                  <option value="America/Halifax" />
+                  <option value="America/St_Johns" />
+                  <option value="America/Regina" />
+                  <option value="America/New_York" />
+                  <option value="Asia/Kolkata" />
+                  <option value="Europe/London" />
+                  <option value="UTC" />
+                </datalist>
               </div>
             </Field>
           </div>

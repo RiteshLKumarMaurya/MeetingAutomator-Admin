@@ -33,7 +33,7 @@ export default function AdminSettingsPage() {
       const previewUrl = tech.image
         ? getMediaUrl(tech.image)
         : null;
-      setImagePreview(previewUrl === '/logos/logo-mark.png' ? null : previewUrl);
+      setImagePreview(previewUrl === '/images/placeholder.webp' ? null : previewUrl);
     }
   }, [settings]);
 

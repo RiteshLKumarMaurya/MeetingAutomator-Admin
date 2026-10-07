@@ -28,7 +28,7 @@ Create `.env.local`:
 ```env
 NEXT_PUBLIC_API_URL=https://api.meetingautomator.com
 NEXT_PUBLIC_GOOGLE_CLIENT_ID=YOUR_GOOGLE_WEB_CLIENT_ID
-NEXT_PUBLIC_CDN_URL=https://media.meetingautomator.com
+NEXT_PUBLIC_MEDIA_BASE_URL=https://media.meetingautomator.com
 ```
 
 The browser never receives backend credentials. Authentication is JWT based and administrator access is enforced by the backend `ROLE_ADMIN` authority.

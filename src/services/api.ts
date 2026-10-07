@@ -33,7 +33,11 @@ export const authApi = {
   refresh: (refreshToken: string) =>
     apiClient.post<ApiResponse<{ accessToken: string; refreshToken: string }>>('/api/v1/auth/tokens/refresh', { refreshToken }),
   validateToken: (token: string) =>
-    apiClient.post<ApiResponse<boolean>>('/api/v1/auth/tokens/validate', { token }),
+    apiClient.post<ApiResponse<boolean>>(
+      '/api/v1/auth/tokens/validate',
+      undefined,
+      { headers: { Authorization: `Bearer ${token}` } }
+    ),
   logout: (data?: LogoutRequest) =>
     apiClient.post<ApiResponse<string>>('/api/v1/auth/logout', data ?? {}),
  changePhone: (data: ChangePhoneNumberRequest) =>
