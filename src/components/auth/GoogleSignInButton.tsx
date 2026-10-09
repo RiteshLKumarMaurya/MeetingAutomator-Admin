@@ -68,7 +68,7 @@ export function GoogleSignInButton({
 
   const hasGoogleClientId = Boolean(
     process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID ||
-      '340916159203-4nh8gjnhkp50sql9dco5a1mr324u1hjp.apps.googleusercontent.com'
+      '1056565264055-c6bnpj1avaa7223ofqk5r1pg79v4j0r1.apps.googleusercontent.com'
   );
 
   return (
