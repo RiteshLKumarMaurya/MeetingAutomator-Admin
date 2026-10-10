@@ -26,7 +26,7 @@ This is the standalone administrator frontend for Meeting Automator. It is inten
 Create `.env.local`:
 
 ```env
-NEXT_PUBLIC_API_URL=https://api.meetingautomator.com
+NEXT_PUBLIC_API_URL=http://localhost:8057
 NEXT_PUBLIC_GOOGLE_CLIENT_ID=YOUR_GOOGLE_WEB_CLIENT_ID
 NEXT_PUBLIC_MEDIA_BASE_URL=https://media.meetingautomator.com
 ```

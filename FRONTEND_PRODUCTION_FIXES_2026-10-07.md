@@ -6,5 +6,5 @@
 - Added a production `.env.example` using the public API, R2 media hostname, admin site URL, Google client ID and Clarity project ID.
 
 ## Production API
-- Canonical API base: `https://api.meetingautomator.com`.
+- Canonical API base: `http://localhost:8057`.
 - Canonical media base: `https://media.meetingautomator.com`.

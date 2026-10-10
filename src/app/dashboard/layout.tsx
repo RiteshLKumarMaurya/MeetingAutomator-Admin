@@ -60,6 +60,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   const logout = useLogout();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  // Keep the navigation compact by default; expand the current section automatically.
+  const [expandedGroups, setExpandedGroups] = useState<Record<string, boolean>>({ Workspace: true });
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [logoutConfirmOpen, setLogoutConfirmOpen] = useState(false);
   const userMenuRef = useRef<HTMLDivElement>(null);
@@ -116,6 +118,21 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     logout();
   };
 
+  const isActive = (item: (typeof navItems)[0]) =>
+    item.exact ? pathname === item.href : pathname.startsWith(item.href);
+
+  const currentItem = navItems.find((item) => item.exact ? pathname === item.href : pathname.startsWith(item.href));
+  const currentTitle = currentItem?.label || 'Control Center';
+
+  // Keep every hook above every conditional return. The boot-loader branch
+  // changes between renders as auth hydration completes, so placing this
+  // effect below that branch violates React's Rules of Hooks.
+  useEffect(() => {
+    if (currentItem?.group) {
+      setExpandedGroups((current) => current[currentItem.group] ? current : { ...current, [currentItem.group]: true });
+    }
+  }, [currentItem?.group]);
+
   // Block render while we genuinely don't know the auth state yet
   // (pre-hydration, actively validating a persisted session on boot, or
   // confirmed unauthenticated but the redirect effect above hasn't
@@ -136,12 +153,6 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     );
   }
 
-  const isActive = (item: (typeof navItems)[0]) =>
-    item.exact ? pathname === item.href : pathname.startsWith(item.href);
-
-  const currentItem = navItems.find((item) => item.exact ? pathname === item.href : pathname.startsWith(item.href));
-  const currentTitle = currentItem?.label || 'Control Center';
-
   const SidebarContent = () => (
     <div className="flex flex-col h-full">
       <div className="px-4 py-5 border-b border-zinc-200/80 dark:border-zinc-800/80">
@@ -160,16 +171,26 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           const items = navItems.filter((item) => item.group === group);
           return (
             <div key={group} className="mb-5 last:mb-0">
-              <div className="px-3 mb-2 text-[9px] font-black uppercase tracking-[.18em] text-zinc-400 dark:text-zinc-600">{group}</div>
-              <div className="space-y-0.5">
-                {items.map((item) => (
-                  <Link key={item.href} href={item.href} onClick={() => setSidebarOpen(false)} className={cn('sidebar-link', isActive(item) && 'active')}>
-                    <item.icon className="w-4 h-4 flex-shrink-0" />
-                    <span className="truncate">{item.label}</span>
-                    {isActive(item) && <ChevronRight className="w-3 h-3 ml-auto" />}
-                  </Link>
-                ))}
-              </div>
+              <button
+                type="button"
+                onClick={() => setExpandedGroups((current) => ({ ...current, [group]: !current[group] }))}
+                aria-expanded={Boolean(expandedGroups[group])}
+                className="flex w-full items-center justify-between rounded-lg px-3 py-2 mb-1 text-[10px] font-bold uppercase tracking-[.14em] text-zinc-400 transition hover:bg-zinc-100 hover:text-zinc-700 dark:text-zinc-500 dark:hover:bg-zinc-800/70 dark:hover:text-zinc-200"
+              >
+                <span>{group}</span>
+                <ChevronDown className={cn('h-3.5 w-3.5 transition-transform', expandedGroups[group] && 'rotate-180')} />
+              </button>
+              {expandedGroups[group] && (
+                <div className="space-y-0.5">
+                  {items.map((item) => (
+                    <Link key={item.href} href={item.href} onClick={() => setSidebarOpen(false)} className={cn('sidebar-link', isActive(item) && 'active')}>
+                      <item.icon className="w-4 h-4 flex-shrink-0" />
+                      <span className="truncate">{item.label}</span>
+                      {isActive(item) && <ChevronRight className="w-3 h-3 ml-auto" />}
+                    </Link>
+                  ))}
+                </div>
+              )}
             </div>
           );
         })}
