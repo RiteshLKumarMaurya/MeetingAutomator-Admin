@@ -134,10 +134,10 @@ export default function DashboardPage() {
         <div className="relative flex flex-wrap items-center justify-between gap-4">
           <div>
             <p className="mb-2 flex items-center gap-2 text-xs font-bold uppercase tracking-[0.16em] text-brand-500"><Sparkles className="h-3.5 w-3.5" /> Meeting Automator</p>
-            <h1 className="font-display text-3xl font-bold tracking-tight text-text-primary">Consultation Overview</h1>
-            <p className="mt-1 text-sm text-text-secondary">Monitor consultation demand, status and upcoming meetings from one place.</p>
+            <h1 className="font-display text-3xl font-bold tracking-tight text-text-primary">Operations Overview</h1>
+            <p className="mt-1 text-sm text-text-secondary">Your control center for consultations, client requests and the workflows that keep Meeting Automator running.</p>
           </div>
-          <Link href="/dashboard/bookings" className="btn-primary inline-flex items-center gap-2"><CalendarCheck className="h-4 w-4" /> Manage consultations</Link>
+          <Link href="/dashboard/bookings" className="btn-primary inline-flex items-center gap-2"><CalendarCheck className="h-4 w-4" /> Review consultations</Link>
         </div>
       </motion.div>
 
