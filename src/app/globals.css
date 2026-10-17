@@ -946,7 +946,9 @@ img {
     #071321;
 }
 .admin-sidebar {
-  width: 268px !important;
+  /* Let the responsive Tailwind width classes control expanded/collapsed states. */
+  min-width: 0;
+  flex-shrink: 0;
   background: rgba(255,255,255,.9);
   border-right: 1px solid var(--admin-line);
   box-shadow: 14px 0 45px rgba(16,35,63,.035);

@@ -6,7 +6,7 @@ import { useEffect, useState, useRef } from 'react';
 import {
   LayoutDashboard, FolderKanban, Package, Layers, Cpu,
   Image, Star, ListChecks, Link2, Globe, Settings, Users, ShieldCheck,
-  Menu, LogOut, ChevronRight, Layers2, ChevronDown, Bell, CalendarDays, Tag, PanelTop, Mail, MapPinned,
+  Menu, LogOut, ChevronRight, Layers2, ChevronDown, Bell, CalendarDays, Tag, PanelTop, Mail, MapPinned, PanelLeftClose, PanelLeftOpen,
 } from 'lucide-react';
 import { useMe } from '@/hooks/useApi';
 import { useAuthStore } from '@/store/authStore';
@@ -61,6 +61,17 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   const logout = useLogout();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+
+  useEffect(() => {
+    try { setSidebarCollapsed(window.localStorage.getItem('meetingautomator-admin-sidebar-collapsed') === 'true'); } catch { /* optional preference */ }
+  }, []);
+
+  const toggleDesktopSidebar = () => setSidebarCollapsed((current) => {
+    const next = !current;
+    try { window.localStorage.setItem('meetingautomator-admin-sidebar-collapsed', String(next)); } catch { /* optional preference */ }
+    return next;
+  });
   // Keep the navigation compact by default; expand the current section automatically.
   const [expandedGroups, setExpandedGroups] = useState<Record<string, boolean>>({ Workspace: true });
   const [userMenuOpen, setUserMenuOpen] = useState(false);
@@ -154,60 +165,45 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     );
   }
 
-  const SidebarContent = () => (
+  const SidebarContent = ({ compact = false }: { compact?: boolean }) => (
     <div className="flex flex-col h-full">
-      <div className="px-4 py-5 border-b border-zinc-200/80 dark:border-zinc-800/80">
-        <Link href="/dashboard" className="flex items-center gap-2">
+      <div className={cn("border-b border-zinc-200/80 dark:border-zinc-800/80", compact ? "px-3 py-5" : "px-4 py-5")}>
+        <Link href="/dashboard" title="Meeting Automator Admin" className={cn("flex items-center gap-2", compact && "justify-center")}>
           <div className="flex h-9 w-9 items-center justify-center overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-black/5 dark:bg-zinc-900 dark:ring-white/10">
             <img src="/logos/logo-mark.webp" alt="Meeting Automator" className="h-8 w-8 object-cover" />
           </div>
-          <span className="font-display font-bold text-sm text-zinc-900 dark:text-zinc-100">
+          {!compact && <span className="font-display font-bold text-sm text-zinc-900 dark:text-zinc-100">
             Meeting <span className="text-brand-500">Automator</span> Admin
-          </span>
+          </span>}
         </Link>
       </div>
 
-      <nav className="flex-1 px-3 py-4 overflow-y-auto">
-        {['Workspace', 'Business', 'Content', 'Access', 'System'].map((group) => {
+      <nav className={cn('flex-1 py-4 overflow-y-auto', compact ? 'px-2' : 'px-3')}>
+        {compact ? navItems.map((item) => (
+          <Link key={item.href} href={item.href} title={item.label} aria-label={item.label} onClick={() => setSidebarOpen(false)} className={cn('mb-1 flex h-10 items-center justify-center rounded-xl transition', isActive(item) ? 'bg-brand-500 text-white shadow-sm' : 'text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-white')}>
+            <item.icon className="h-4 w-4 flex-shrink-0" />
+          </Link>
+        )) : ['Workspace', 'Business', 'Content', 'Access', 'System'].map((group) => {
           const items = navItems.filter((item) => item.group === group);
           return (
             <div key={group} className="mb-5 last:mb-0">
-              <button
-                type="button"
-                onClick={() => setExpandedGroups((current) => ({ ...current, [group]: !current[group] }))}
-                aria-expanded={Boolean(expandedGroups[group])}
-                className="flex w-full items-center justify-between rounded-lg px-3 py-2 mb-1 text-[10px] font-bold uppercase tracking-[.14em] text-zinc-400 transition hover:bg-zinc-100 hover:text-zinc-700 dark:text-zinc-500 dark:hover:bg-zinc-800/70 dark:hover:text-zinc-200"
-              >
-                <span>{group}</span>
-                <ChevronDown className={cn('h-3.5 w-3.5 transition-transform', expandedGroups[group] && 'rotate-180')} />
+              <button type="button" onClick={() => setExpandedGroups((current) => ({ ...current, [group]: !current[group] }))} aria-expanded={Boolean(expandedGroups[group])} className="flex w-full items-center justify-between rounded-lg px-3 py-2 mb-1 text-[10px] font-bold uppercase tracking-[.14em] text-zinc-400 transition hover:bg-zinc-100 hover:text-zinc-700 dark:text-zinc-500 dark:hover:bg-zinc-800/70 dark:hover:text-zinc-200">
+                <span>{group}</span><ChevronDown className={cn('h-3.5 w-3.5 transition-transform', expandedGroups[group] && 'rotate-180')} />
               </button>
-              {expandedGroups[group] && (
-                <div className="space-y-0.5">
-                  {items.map((item) => (
-                    <Link key={item.href} href={item.href} onClick={() => setSidebarOpen(false)} className={cn('sidebar-link', isActive(item) && 'active')}>
-                      <item.icon className="w-4 h-4 flex-shrink-0" />
-                      <span className="truncate">{item.label}</span>
-                      {isActive(item) && <ChevronRight className="w-3 h-3 ml-auto" />}
-                    </Link>
-                  ))}
-                </div>
-              )}
+              {expandedGroups[group] && <div className="space-y-0.5">{items.map((item) => <Link key={item.href} href={item.href} title={item.label} onClick={() => setSidebarOpen(false)} className={cn('sidebar-link', isActive(item) && 'active')}><item.icon className="w-4 h-4 flex-shrink-0" /><span className="truncate">{item.label}</span>{isActive(item) && <ChevronRight className="w-3 h-3 ml-auto" />}</Link>)}</div>}
             </div>
           );
         })}
       </nav>
 
-      <div className="px-3 py-4 border-t border-zinc-200 dark:border-zinc-800 space-y-1">
-        <Link href={process.env.NEXT_PUBLIC_SITE_URL || "https://meetingautomator.com"} target="_blank" rel="noreferrer" className="sidebar-link">
-          <Globe className="w-4 h-4" /> View Website
+      <div className={cn("border-t border-zinc-200 dark:border-zinc-800 space-y-1", compact ? "px-2 py-4" : "px-3 py-4")}>
+        <Link title="View Website" href={process.env.NEXT_PUBLIC_SITE_URL || "https://meetingautomator.com"} target="_blank" rel="noreferrer" className={cn("sidebar-link", compact && "justify-center px-0")}>
+          <Globe className="w-4 h-4" /> {!compact && "View Website"}
         </Link>
-        <button
-          onClick={handleLogout}
-          className="sidebar-link w-full text-red-500 hover:bg-red-50 dark:hover:bg-red-950/20 hover:text-red-600"
-        >
-          <LogOut className="w-4 h-4" /> Logout
+        <button title="Logout" onClick={handleLogout} className={cn("sidebar-link w-full text-red-500 hover:bg-red-50 dark:hover:bg-red-950/20 hover:text-red-600", compact && "justify-center px-0")}>
+          <LogOut className="w-4 h-4" /> {!compact && "Logout"}
         </button>
-        {me && (
+        {me && !compact && (
           <div className="px-3 pt-3 flex items-center gap-2">
             <div className="w-7 h-7 rounded-full bg-brand-600 flex items-center justify-center text-white text-xs font-bold">
               {me.fullName?.charAt(0) || 'U'}
@@ -238,8 +234,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         </div>
       )}
       <div className="admin-shell flex h-screen overflow-hidden">
-      <aside className="admin-sidebar hidden lg:flex w-64 flex-col flex-shrink-0">
-        <SidebarContent />
+      <aside className={cn("admin-sidebar hidden lg:flex flex-col flex-shrink-0 transition-[width] duration-200", sidebarCollapsed ? "w-[72px]" : "w-64")}>
+        <SidebarContent compact={sidebarCollapsed} />
       </aside>
 
       {sidebarOpen && (
@@ -253,12 +249,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
       <div className="admin-content flex-1 flex flex-col overflow-hidden">
         <header className="admin-topbar h-[72px] flex items-center px-5 gap-3 flex-shrink-0">
-          <button
-            onClick={() => setSidebarOpen(true)}
-            className="lg:hidden p-1.5 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800"
-          >
-            <Menu className="w-5 h-5" />
-          </button>
+          <button onClick={() => setSidebarOpen(true)} aria-label="Open navigation" className="lg:hidden p-1.5 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800"><Menu className="w-5 h-5" /></button>
+          <button onClick={toggleDesktopSidebar} aria-label={sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"} title={sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"} className="hidden lg:inline-flex h-9 w-9 items-center justify-center rounded-lg text-zinc-500 transition hover:bg-zinc-100 hover:text-zinc-900 dark:hover:bg-zinc-800 dark:hover:text-white">{sidebarCollapsed ? <PanelLeftOpen className="h-4 w-4" /> : <PanelLeftClose className="h-4 w-4" />}</button>
 
           <div className="hidden md:block min-w-0">
             <div className="admin-page-title truncate text-zinc-900 dark:text-zinc-100">{currentTitle}</div>
@@ -306,7 +298,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         )}
 
         <main className="admin-main flex-1 overflow-y-auto px-4 pb-6 pt-5 md:px-7 md:pb-8 md:pt-6">
-          <div className="mx-auto max-w-7xl">
+          <div className={cn("mx-auto w-full", pathname === "/dashboard/leads" ? "max-w-none" : "max-w-7xl")}>
             {isLoading && !me ? (
               <div className="flex items-center justify-center min-h-[400px]">
                 <div className="w-6 h-6 border-2 border-brand-500 border-t-transparent rounded-full animate-spin" />
