@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import {
   ArrowDownToLine, ArrowUpRight, Building2, CheckCircle2, Clock3, ExternalLink, FileSpreadsheet, Settings2,
@@ -49,7 +49,7 @@ interface SearchResponse {
   nextPageToken?: string | null;
 }
 interface SearchProgress {
-  target: number;
+  target: number | null;
   discovered: number;
   saved: number;
   duplicates: number;
@@ -142,6 +142,7 @@ export default function LeadGenerationPage() {
   const [leads, setLeads] = useState<Lead[]>([]);
   const [loading, setLoading] = useState(true);
   const [searching, setSearching] = useState(false);
+  const cancelSearchRef = useRef(false);
   const [exporting, setExporting] = useState(false);
   const [exportingExcel, setExportingExcel] = useState(false);
   const [selectedLeadIds, setSelectedLeadIds] = useState<number[]>([]);
@@ -158,7 +159,7 @@ export default function LeadGenerationPage() {
   const [tablePage, setTablePage] = useState(1);
   const [tablePageSize, setTablePageSize] = useState(25);
   const [lastSearch, setLastSearch] = useState<SearchResponse | null>(null);
-  const [resultLimit, setResultLimit] = useState(100);
+  const [resultLimit, setResultLimit] = useState<number | 'ALL'>(100);
   const [advancedSearchSettingsOpen, setAdvancedSearchSettingsOpen] = useState(false);
   const [requestedFields, setRequestedFields] = useState<string[]>(['name', 'address', 'mapsUrl', 'websiteUrl']);
   const [searchProgress, setSearchProgress] = useState<SearchProgress | null>(null);
@@ -207,64 +208,99 @@ export default function LeadGenerationPage() {
       toast.error('Enter both a business keyword and city');
       return;
     }
-    if (!window.confirm(`Search one keyword only. Google Places allows up to 60 results across at most 3 pages for this query (your Lead Settings page cap also applies). This may send up to 3 billable API requests, subject to your daily/monthly caps. Continue?`)) {
-      return;
-    }
+    const allAvailableMode = resultLimit === 'ALL';
+    const requestedTarget = allAvailableMode ? null : Math.max(1, Math.min(1000, Number(resultLimit) || 100));
+    const targetDescription = allAvailableMode ? 'all available results within the resolved city area' : `up to ${requestedTarget} unique leads`;
+    if (!window.confirm(`Search for ${targetDescription} in ${city.trim()} using geographic coverage cells? ${allAvailableMode ? 'This may continue until coverage is exhausted or a configured request/budget cap is reached.' : 'If the target is reached and more search coverage remains, you will be asked whether to continue or stop at the target.'} This may require multiple billable Google Places requests plus a city-boundary lookup. Your configured daily/monthly request and budget caps still apply. You can stop the search at any time. Continue?`)) return;
+
+    cancelSearchRef.current = false;
     setSearching(true);
     setLastSearch(null);
     const terms = keyword.trim();
-    let totalDiscovered = 0;
-    let totalSaved = 0;
-    let totalDuplicates = 0;
-    let batch = 0;
-    let apiRequests = 0;
+    let totalDiscovered = 0, totalSaved = 0, totalDuplicates = 0, batch = 0, apiRequests = 0;
     const allNew: Lead[] = [];
     const seenIds = new Set(leads.map((lead) => lead.placeId));
-    setSearchProgress({ target: Math.min(resultLimit, 60), discovered: 0, saved: 0, duplicates: 0, batch: 0, apiRequests: 0, currentQuery: terms });
+    const target = requestedTarget;
+    let continueBeyondTarget = allAvailableMode;
+    let stopAtTarget = false;
+    setSearchProgress({ target, discovered: 0, saved: 0, duplicates: 0, batch: 0, apiRequests: 0, currentQuery: terms });
     try {
-      // One manually selected keyword only. Google Text Search (New) supports up to
-      // 20 results per page and up to 60 results total for a single query (max 3 pages).
-      let pageToken: string | null | undefined = undefined;
-      let pagesFetched = 0;
-      const effectiveTarget = Math.min(resultLimit, 60);
-      do {
-        if (totalSaved >= effectiveTarget || pagesFetched >= (usageDashboard?.settings.maxPagesPerSearch ?? 3)) break;
-        apiRequests += 1;
-        setSearchProgress({ target: effectiveTarget, discovered: totalDiscovered, saved: totalSaved, duplicates: totalDuplicates, batch, apiRequests, currentQuery: terms });
-        const response: { data: ApiResponse<SearchResponse> } = await apiClient.post<ApiResponse<SearchResponse>>('/api/v1/admin/leads/search', {
-          keyword: terms, city: city.trim(), queryText: terms, pageToken: pageToken || null, fields: requestedFields,
-        }, { timeout: 60000 });
-        const result = response.data.data;
-        batch += 1;
-        pagesFetched += 1;
-        totalDiscovered += result.resultsReturned ?? result.leads?.length ?? 0;
-        totalDuplicates += result.duplicatesSkipped ?? 0;
-        const newOnPage = (result.leads ?? []).filter((lead) => !seenIds.has(lead.placeId));
-        newOnPage.forEach((lead) => seenIds.add(lead.placeId));
-        allNew.push(...newOnPage);
-        totalSaved += newOnPage.length;
-        if (newOnPage.length) {
-          setLeads((current) => {
+      const boundsResponse = await apiClient.get<ApiResponse<{lowLatitude:number;lowLongitude:number;highLatitude:number;highLongitude:number}>>(
+        `/api/v1/admin/leads/search/bounds?city=${encodeURIComponent(city.trim())}`, { timeout: 30000 }
+      );
+      const bounds = boundsResponse.data.data;
+      // Partition the geocoded viewport into small, overlapping-safe rectangles.
+      // Every cell gets its own Google pagination sequence; database Place-ID uniqueness
+      // and the in-memory set prevent overlap/repeated-page duplicates from being counted.
+      const latStep = 0.12, lngStep = 0.12;
+      const cells: Array<{lowLatitude:number;lowLongitude:number;highLatitude:number;highLongitude:number}> = [];
+      for (let lat = bounds.lowLatitude; lat < bounds.highLatitude; lat += latStep) {
+        for (let lng = bounds.lowLongitude; lng < bounds.highLongitude; lng += lngStep) {
+          cells.push({
+            lowLatitude: Math.max(-90, lat - 0.002),
+            lowLongitude: Math.max(-180, lng - 0.002),
+            highLatitude: Math.min(90, Math.min(bounds.highLatitude, lat + latStep + 0.002)),
+            highLongitude: Math.min(180, Math.min(bounds.highLongitude, lng + lngStep + 0.002)),
+          });
+        }
+      }
+      const maxPagesPerCell = Math.max(1, Math.min(3, usageDashboard?.settings.maxPagesPerSearch ?? 3));
+      for (let cellIndex = 0; cellIndex < cells.length && (continueBeyondTarget || target === null || totalSaved < target) && !stopAtTarget; cellIndex++) {
+        if (cancelSearchRef.current) break;
+        let pageToken: string | null | undefined = undefined;
+        for (let page = 0; page < maxPagesPerCell && (continueBeyondTarget || target === null || totalSaved < target) && !stopAtTarget; page++) {
+          if (cancelSearchRef.current) break;
+          apiRequests += 1;
+          setSearchProgress({ target, discovered: totalDiscovered, saved: totalSaved, duplicates: totalDuplicates, batch, apiRequests, currentQuery: `${terms} · area ${cellIndex + 1}/${cells.length}` });
+          const remainingTarget = target === null ? 20 : Math.max(1, target - totalSaved);
+          const pageSize = Math.min(20, remainingTarget);
+          const response: { data: ApiResponse<SearchResponse> } = await apiClient.post<ApiResponse<SearchResponse>>('/api/v1/admin/leads/search', {
+            keyword: terms, city: city.trim(), queryText: terms, pageToken: pageToken || null,
+            pageSize, fields: requestedFields, locationRestriction: cells[cellIndex],
+          }, { timeout: 60000 });
+          const result = response.data.data;
+          batch += 1;
+          totalDiscovered += result.resultsReturned ?? result.leads?.length ?? 0;
+          totalDuplicates += result.duplicatesSkipped ?? 0;
+          const newOnPage = (result.leads ?? []).filter((lead) => !seenIds.has(lead.placeId));
+          newOnPage.forEach((lead) => seenIds.add(lead.placeId));
+          allNew.push(...newOnPage);
+          totalSaved += newOnPage.length;
+          if (newOnPage.length) setLeads((current) => {
             const ids = new Set(current.map((lead) => lead.placeId));
             return [...current, ...newOnPage.filter((lead) => !ids.has(lead.placeId))];
           });
+          setSearchProgress({ target, discovered: totalDiscovered, saved: totalSaved, duplicates: totalDuplicates, batch, apiRequests, currentQuery: `${terms} · area ${cellIndex + 1}/${cells.length}` });
+          pageToken = result.nextPageToken;
+          const moreCoverageRemains = Boolean(pageToken) || cellIndex < cells.length - 1;
+          if (!continueBeyondTarget && target !== null && totalSaved >= target && moreCoverageRemains) {
+            const continueSearch = window.confirm(`Target reached: ${totalSaved} unique leads saved. More geographic areas or pages remain. Do you want to continue searching for the remaining leads? Choose Cancel to stop at ${target.toLocaleString()}.`);
+            if (continueSearch) {
+              continueBeyondTarget = true;
+              setSearchProgress({ target: null, discovered: totalDiscovered, saved: totalSaved, duplicates: totalDuplicates, batch, apiRequests, currentQuery: `${terms} · continuing beyond target` });
+            } else {
+              stopAtTarget = true;
+              break;
+            }
+          }
+          if (!pageToken) break;
         }
-        setSearchProgress({ target: effectiveTarget, discovered: totalDiscovered, saved: totalSaved, duplicates: totalDuplicates, batch, apiRequests, currentQuery: terms });
-        pageToken = result.nextPageToken;
-      } while (pageToken && pagesFetched < (usageDashboard?.settings.maxPagesPerSearch ?? 3) && totalSaved < effectiveTarget);
-      const result: SearchResponse = {
-        resultsReturned: totalDiscovered, newlySaved: totalSaved, duplicatesSkipped: totalDuplicates,
-        leads: allNew, notice: totalSaved >= Math.min(resultLimit, 60) ? 'Selected target reached.' : pagesFetched >= (usageDashboard?.settings.maxPagesPerSearch ?? 3) ? 'Google Places reached the 60-result maximum for one keyword. Use a different keyword manually to continue.' : 'Google returned no more pages for this keyword. No automatic keyword research was run.',
-      };
-      setLastSearch(result);
-      if (totalSaved > 0) toast.success(`Found ${totalSaved} new lead${totalSaved === 1 ? '' : 's'} and saved them`);
-      else toast('Search finished — no new leads found for these variations.');
+      }
+      const stopped = cancelSearchRef.current;
+      setLastSearch({
+        resultsReturned: totalDiscovered, newlySaved: totalSaved, duplicatesSkipped: totalDuplicates, leads: allNew,
+        notice: stopped ? `Search stopped by you after ${apiRequests} request(s). ${totalSaved} unique leads were saved.` :
+          stopAtTarget ? `Target reached: ${totalSaved} unique leads saved. You chose to stop; remaining coverage was not searched.` :
+          target === null || continueBeyondTarget ? `Search coverage completed or a configured request/budget cap stopped further requests. Saved ${totalSaved} unique leads from ${cells.length} geographic cells. Google results are not guaranteed to include every business.` :
+          totalSaved >= target ? `Target reached: ${totalSaved} unique leads saved.` :
+          `Coverage finished or configured request/budget limits stopped further requests. Saved ${totalSaved} unique leads from ${cells.length} geographic cells. Google results are not guaranteed to include every business.`,
+      });
+      if (totalSaved > 0) toast.success(`${totalSaved} unique lead${totalSaved === 1 ? '' : 's'} saved`);
+      else toast('Search finished — no new unique leads were found.');
     } catch (error: any) {
       const message = error?.response?.data?.message || error?.response?.data?.data?.message || 'Search interrupted. Results already saved are still available.';
       toast.error(message, { duration: 6500 });
-      if (totalDiscovered > 0 || totalSaved > 0) {
-        setLastSearch({ resultsReturned: totalDiscovered, newlySaved: totalSaved, duplicatesSkipped: totalDuplicates, leads: allNew, notice: `Search interrupted after ${apiRequests} Google request(s). ${totalSaved} new leads saved before interruption.` });
-      }
+      if (totalDiscovered > 0 || totalSaved > 0) setLastSearch({ resultsReturned: totalDiscovered, newlySaved: totalSaved, duplicatesSkipped: totalDuplicates, leads: allNew, notice: `Search interrupted after ${apiRequests} Google request(s). ${totalSaved} unique leads were saved before interruption.` });
     } finally {
       setSearching(false);
       setSearchProgress(null);
@@ -272,6 +308,8 @@ export default function LeadGenerationPage() {
       await loadUsage();
     }
   };
+
+  const stopSearch = () => { cancelSearchRef.current = true; toast('Stopping after the current request finishes…'); };
 
   const updateStatus = async (lead: Lead, status: LeadStatus) => {
     const previous = leads;
@@ -445,8 +483,8 @@ export default function LeadGenerationPage() {
           </label>
           {advancedSearchSettingsOpen && <label className="block">
             <span className="mb-2 block text-xs font-semibold uppercase tracking-wide text-zinc-500">Target leads</span>
-            <select value={resultLimit} onChange={(event) => setResultLimit(Number(event.target.value))} disabled={searching} className="w-full rounded-xl border border-zinc-200 bg-zinc-50 px-3 py-3 text-sm text-zinc-900 outline-none focus:border-brand-500 dark:border-zinc-700 dark:bg-zinc-950 dark:text-white">
-              {[20, 40, 60, 100, 250, 500, 1000].map((count) => <option key={count} value={count}>{count.toLocaleString()} leads{count > 60 ? ' (Google single-query max: 60)' : ''}</option>)}
+            <select value={resultLimit} onChange={(event) => setResultLimit(event.target.value === 'ALL' ? 'ALL' : Number(event.target.value))} disabled={searching} className="w-full rounded-xl border border-zinc-200 bg-zinc-50 px-3 py-3 text-sm text-zinc-900 outline-none focus:border-brand-500 dark:border-zinc-700 dark:bg-zinc-950 dark:text-white">
+              {[20, 40, 60, 100, 250, 500, 1000].map((count) => <option key={count} value={count}>{count.toLocaleString()} unique leads (geographic coverage)</option>)}<option value="ALL">All available leads (until coverage or budget/request caps end)</option>
             </select>
           </label>}
           {advancedSearchSettingsOpen && <div className="col-span-1 min-w-0 rounded-2xl border border-zinc-200 bg-zinc-50/70 p-4 dark:border-zinc-800 dark:bg-zinc-950/40 sm:col-span-2 xl:col-span-3">
@@ -462,13 +500,14 @@ export default function LeadGenerationPage() {
           </button>
         </div>
         {searching && searchProgress && <div className="relative mt-5 overflow-hidden rounded-2xl border border-sky-400/30 bg-gradient-to-br from-slate-950 via-slate-900 to-indigo-950 p-5 text-white shadow-xl shadow-sky-950/10">
+          <div className="relative mb-3 flex justify-end"><button type="button" onClick={stopSearch} className="inline-flex items-center gap-2 rounded-lg border border-white/20 px-3 py-2 text-sm font-semibold hover:bg-white/10"><X className="h-4 w-4" /> Stop search</button></div>
           <div className="pointer-events-none absolute -right-10 -top-14 h-44 w-44 animate-pulse rounded-full bg-sky-400/20 blur-3xl" />
           <div className="pointer-events-none absolute -bottom-16 left-1/3 h-40 w-40 animate-pulse rounded-full bg-violet-500/20 blur-3xl [animation-delay:700ms]" />
           <div className="relative flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex items-center gap-3"><div className="relative flex h-12 w-12 items-center justify-center rounded-2xl border border-sky-300/30 bg-sky-300/10"><Sparkles className="h-5 w-5 animate-pulse text-sky-200" /><span className="absolute inset-0 animate-ping rounded-2xl border border-sky-200/30" /></div><div><p className="font-semibold">Finding your next customers<span className="inline-flex w-6 justify-start"><span className="animate-bounce">.</span><span className="animate-bounce [animation-delay:120ms]">.</span><span className="animate-bounce [animation-delay:240ms]">.</span></span></p><p className="mt-1 max-w-xl truncate text-xs text-slate-300">Now exploring: {searchProgress.currentQuery}</p></div></div>
             <div className="grid grid-cols-3 gap-2 text-center"><div className="rounded-xl border border-white/10 bg-white/5 px-3 py-2"><p className="text-xl font-bold tabular-nums">{searchProgress.saved}</p><p className="text-[10px] uppercase tracking-wider text-slate-300">New saved</p></div><div className="rounded-xl border border-white/10 bg-white/5 px-3 py-2"><p className="text-xl font-bold tabular-nums">{searchProgress.duplicates}</p><p className="text-[10px] uppercase tracking-wider text-slate-300">Duplicates</p></div><div className="rounded-xl border border-white/10 bg-white/5 px-3 py-2"><p className="text-xl font-bold tabular-nums">{searchProgress.batch}</p><p className="text-[10px] uppercase tracking-wider text-slate-300">Batches</p></div></div>
           </div>
-          <div className="relative mt-5"><div className="mb-2 flex items-center justify-between text-xs text-slate-300"><span>New-lead target progress</span><span>{Math.min(100, Math.round((searchProgress.saved / searchProgress.target) * 100))}% · {Math.min(searchProgress.saved, searchProgress.target).toLocaleString()} / {searchProgress.target.toLocaleString()} saved</span></div><div className="h-2 overflow-hidden rounded-full bg-white/10"><div className="h-full rounded-full bg-gradient-to-r from-cyan-300 via-sky-400 to-violet-400 transition-all duration-700 ease-out" style={{ width: `${Math.max(3, Math.min(100, (searchProgress.saved / searchProgress.target) * 100))}%` }} /><div className="-mt-2 h-2 w-1/4 animate-pulse rounded-full bg-white/30 blur-sm" /></div><div className="mt-3 flex flex-wrap items-center justify-between gap-2 text-[11px] text-slate-400"><span>{searchProgress.discovered.toLocaleString()} Google results checked · {searchProgress.apiRequests} API requests attempted</span><span>Each successful batch is shown immediately. Targets are maximums, not guarantees.</span></div></div>
+          <div className="relative mt-5"><div className="mb-2 flex items-center justify-between text-xs text-slate-300"><span>New-lead target progress</span><span>{searchProgress.target === null ? `All available mode · ${searchProgress.saved.toLocaleString()} saved` : `${Math.min(100, Math.round((searchProgress.saved / searchProgress.target) * 100))}% · ${Math.min(searchProgress.saved, searchProgress.target).toLocaleString()} / ${searchProgress.target.toLocaleString()} saved`}</span></div><div className="h-2 overflow-hidden rounded-full bg-white/10"><div className="h-full rounded-full bg-gradient-to-r from-cyan-300 via-sky-400 to-violet-400 transition-all duration-700 ease-out" style={{ width: `${searchProgress.target === null ? 35 : Math.max(3, Math.min(100, (searchProgress.saved / searchProgress.target) * 100))}%` }} /><div className="-mt-2 h-2 w-1/4 animate-pulse rounded-full bg-white/30 blur-sm" /></div><div className="mt-3 flex flex-wrap items-center justify-between gap-2 text-[11px] text-slate-400"><span>{searchProgress.discovered.toLocaleString()} Google results checked · {searchProgress.apiRequests} API requests attempted</span><span>Each successful batch is shown immediately. Targets are maximums, not guarantees.</span></div></div>
         </div>}
         {lastSearch && <div className="mt-5 flex flex-col gap-3 rounded-2xl border border-emerald-500/20 bg-emerald-500/5 p-4 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-start gap-3"><CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-emerald-600" /><div><p className="text-sm font-bold text-zinc-900 dark:text-white">Search completed</p><p className="mt-1 text-sm text-zinc-600 dark:text-zinc-300">{lastSearch.resultsReturned} results checked · {lastSearch.newlySaved} new saved · {lastSearch.duplicatesSkipped} duplicates skipped. {lastSearch.notice}</p></div></div>
