@@ -486,7 +486,7 @@ export interface ServiceTechnologyResponse {
 // ============================================================
 // Packages
 // ============================================================
-export type CurrencyCode = 'INR' | 'USD' | 'EUR' | 'GBP' | 'AED';
+export type CurrencyCode = 'INR' | 'USD' | 'CAD' | 'EUR' | 'GBP' | 'AED';
 export type PaymentMode = 'NONE' | 'PRE_PAYMENT' | 'POST_PAYMENT';
 
 

@@ -16,7 +16,8 @@ import type { PackageResponse, ServiceResponse, CurrencyCode, PaymentMode } from
 
 const CURRENCIES: { value: CurrencyCode; label: string; symbol: string }[] = [
   { value: 'INR', label: 'Indian Rupee', symbol: '₹' },
-  { value: 'USD', label: 'US Dollar', symbol: '$' },
+  { value: 'USD', label: 'US Dollar', symbol: 'US$' },
+  { value: 'CAD', label: 'Canadian Dollar', symbol: 'CA$' },
   { value: 'EUR', label: 'Euro', symbol: '€' },
   { value: 'GBP', label: 'British Pound', symbol: '£' },
   { value: 'AED', label: 'Dirham', symbol: 'د.إ' },
@@ -42,7 +43,7 @@ function PackageModal({
   const [longDescription, setLongDescription] = useState(pkg?.longDescription ?? '');
   const [price, setPrice] = useState(pkg?.price?.toString() ?? '0');
   const [currencyCode, setCurrencyCode] = useState<CurrencyCode>(
-    (pkg?.currencyCode ?? 'USD') as CurrencyCode
+    (pkg?.currencyCode ?? 'CAD') as CurrencyCode
   );
   const [paymentMode, setPaymentMode] = useState<PaymentMode>(pkg?.paymentMode ?? 'NONE');
   const [displayOrder, setDisplayOrder] = useState(pkg?.displayOrder ?? 0);
@@ -314,6 +315,7 @@ function PackageModal({
                 <select className="input-base" value={currencyCode} onChange={e => setCurrencyCode(e.target.value as CurrencyCode)}>
                   {CURRENCIES.map(c => <option key={c.value} value={c.value}>{c.label} ({c.symbol})</option>)}
                 </select>
+                <p className="text-[11px] text-zinc-400 mt-1">For Canadian customers, select Canadian Dollar (CAD). Existing packages keep their saved currency until you change and save it.</p>
               </div>
             </div>
             <div className="grid grid-cols-2 gap-3">
@@ -324,7 +326,7 @@ function PackageModal({
                   <option value="PRE_PAYMENT">Pay before booking</option>
                   <option value="POST_PAYMENT">Pay after consultation</option>
                 </select>
-                <p className="text-[11px] text-zinc-400 mt-1">Paid modes require a package price greater than 0. Free mode requires 0.</p>
+                <p className="text-[11px] text-zinc-400 mt-1">Paid modes require a package price greater than 0. Free mode requires 0. This controls booking checkout timing; it does not configure a 50% deposit or instalments.</p>
               </div>
               <div>
                 <label className="text-xs font-semibold text-zinc-500 mb-1 block">Display Order</label>
